@@ -27,13 +27,13 @@ const Footer = () => {
           <div className="footer-links-area">
             <div className="footer-link-group">
               <h4>Do'kon</h4>
-              <Link to="#">Katalog</Link>
+              <Link to="/shop">Katalog</Link>
             </div>
             <div className="footer-link-group">
               <h4>Mijozlar uchun</h4>
-              <Link to="#">Yetkazib berish</Link>
-              <Link to="#">To'lov usullari</Link>
-              <Link to="#">FAQ</Link>
+              <Link to="/delivery">Yetkazib berish</Link>
+              <Link to="/payments">To'lov usullari</Link>
+              <Link to="/faq">FAQ</Link>
             </div>
             <div className="footer-link-group">
               <h4>Bog'lanish</h4>

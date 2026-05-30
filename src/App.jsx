@@ -14,6 +14,9 @@ import Admin from './pages/Admin';
 import Profile from './pages/Profile';
 import Checkout from './pages/Checkout';
 import BannerDetails from './pages/BannerDetails';
+import Delivery from './pages/Delivery';
+import Payments from './pages/Payments';
+import Faq from './pages/Faq';
 import './index.css';
 
 // Global beautiful custom alert override
@@ -152,6 +155,9 @@ function App() {
               <Route path="/admin" element={<Admin />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/banner/:id" element={<BannerDetails />} />
+              <Route path="/delivery" element={<Delivery />} />
+              <Route path="/payments" element={<Payments />} />
+              <Route path="/faq" element={<Faq />} />
             </Routes>
           </main>
           <Footer />
