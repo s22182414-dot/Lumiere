@@ -129,27 +129,14 @@ const ProductCard = ({ product }) => {
 
           {quantityInCart > 0 ? (
             <div 
-              style={{
-                width: '100%',
-                height: '40px',
-                borderRadius: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                backgroundColor: 'var(--color-primary)',
-                color: '#ffffff',
-                fontSize: '1rem',
-                fontWeight: '700',
-                overflow: 'hidden',
-                marginTop: 'auto',
-                boxShadow: '0 4px 12px rgba(255, 51, 102, 0.15)'
-              }}
+              className="product-quantity-selector"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
               }}
             >
               <button 
+                className="product-quantity-btn"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -159,22 +146,6 @@ const ProductCard = ({ product }) => {
                     updateQuantity(product.id, quantityInCart - 1);
                   }
                 }}
-                style={{
-                  width: '40px',
-                  height: '100%',
-                  background: 'none',
-                  border: 'none',
-                  color: '#ffffff',
-                  fontSize: '1.25rem',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'background-color 0.2s'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               >
                 <Minus size={16} strokeWidth={2.5} />
               </button>
@@ -182,27 +153,12 @@ const ProductCard = ({ product }) => {
               <span style={{ userSelect: 'none' }}>{quantityInCart}</span>
               
               <button 
+                className="product-quantity-btn"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   updateQuantity(product.id, quantityInCart + 1);
                 }}
-                style={{
-                  width: '40px',
-                  height: '100%',
-                  background: 'none',
-                  border: 'none',
-                  color: '#ffffff',
-                  fontSize: '1.25rem',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'background-color 0.2s'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               >
                 <Plus size={16} strokeWidth={2.5} />
               </button>
@@ -211,30 +167,6 @@ const ProductCard = ({ product }) => {
             <button 
               className="add-to-cart-btn-full" 
               onClick={handleAdd}
-              style={{
-                width: '100%',
-                padding: '10px 0',
-                borderRadius: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                border: 'none',
-                backgroundColor: 'var(--color-primary)',
-                color: '#ffffff',
-                fontSize: '0.92rem',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 4px 12px rgba(255, 51, 102, 0.15)',
-                marginTop: 'auto'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.opacity = '0.9';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.opacity = '1';
-              }}
             >
               <ShoppingBag size={18} strokeWidth={2} />
               <span>Savatga</span>
