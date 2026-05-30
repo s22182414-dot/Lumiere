@@ -667,11 +667,11 @@ const Profile = () => {
                               borderRadius: '4px',
                               fontSize: '0.75rem',
                               fontWeight: '700',
-                              backgroundColor: item.status === 'Yetkazildi' ? '#E6F9F0' : item.status === 'Yo\'lda' ? '#EBF6FC' : '#FFF9EC',
-                              color: item.status === 'Yetkazildi' ? '#00B048' : item.status === 'Yo\'lda' ? '#229ED9' : '#FFB800'
+                              backgroundColor: item.status === 'Xaridorga berilgan' ? '#E6F9F0' : item.status === 'Yo\'lda' ? '#EBF6FC' : '#FFF9EC',
+                              color: item.status === 'Xaridorga berilgan' ? '#00B048' : item.status === 'Yo\'lda' ? '#229ED9' : '#FFB800'
                             }}>
-                              {item.status === 'Yetkazildi' ? (
-                                <><Check size={12} strokeWidth={3} /> Yetkazildi</>
+                              {item.status === 'Xaridorga berilgan' ? (
+                                <><Check size={12} strokeWidth={3} /> Xaridorga berilgan</>
                               ) : item.status === 'Yo\'lda' ? (
                                 <>Yo'lda</>
                               ) : (

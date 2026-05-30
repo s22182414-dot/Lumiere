@@ -1234,8 +1234,8 @@ const Seller = () => {
                                   borderRadius: '6px',
                                   fontSize: '0.75rem',
                                   fontWeight: '600',
-                                  backgroundColor: order.status === 'Yetkazildi' ? '#E6F9F0' : order.status === 'Yo\'lda' ? '#EBF6FC' : '#FFF9EC',
-                                  color: order.status === 'Yetkazildi' ? '#00B048' : order.status === 'Yo\'lda' ? '#229ED9' : '#FFB800'
+                                  backgroundColor: order.status === 'Xaridorga berilgan' ? '#E6F9F0' : order.status === 'Yo\'lda' ? '#EBF6FC' : '#FFF9EC',
+                                  color: order.status === 'Xaridorga berilgan' ? '#00B048' : order.status === 'Yo\'lda' ? '#229ED9' : '#FFB800'
                                 }}>
                                   {order.status}
                                 </span>
@@ -1411,8 +1411,8 @@ const Seller = () => {
                             borderRadius: '6px',
                             fontSize: '0.75rem',
                             fontWeight: '600',
-                            backgroundColor: order.status === 'Yetkazildi' ? '#E6F9F0' : order.status === 'Yo\'lda' ? '#EBF6FC' : '#FFF9EC',
-                            color: order.status === 'Yetkazildi' ? '#00B048' : order.status === 'Yo\'lda' ? '#229ED9' : '#FFB800'
+                            backgroundColor: order.status === 'Xaridorga berilgan' ? '#E6F9F0' : order.status === 'Yo\'lda' ? '#EBF6FC' : '#FFF9EC',
+                            color: order.status === 'Xaridorga berilgan' ? '#00B048' : order.status === 'Yo\'lda' ? '#229ED9' : '#FFB800'
                           }}>
                             {order.status}
                           </span>
@@ -1428,10 +1428,10 @@ const Seller = () => {
                             )}
                             {order.status === 'Yo\'lda' && (
                               <button 
-                                onClick={() => handleUpdateStatus(order._id, 'Yetkazildi')}
+                                onClick={() => handleUpdateStatus(order._id, 'Xaridorga berilgan')}
                                 style={{ padding: '6px 12px', fontSize: '0.8rem', fontWeight: '600', border: '1px solid #00B048', borderRadius: '6px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px', backgroundColor: '#E6F9F0', color: '#00B048' }}
                               >
-                                <Check size={14} /> Yetkazildi
+                                <Check size={14} /> Xaridorga berilgan
                               </button>
                             )}
                           </div>
