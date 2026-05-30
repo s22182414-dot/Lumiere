@@ -119,14 +119,35 @@ const ProductCard = ({ product }) => {
           </div>
           
           
-          <div className="product-price-row">
+          <div className="product-price-row" style={{ marginTop: 'auto', marginBottom: '8px' }}>
             <div className="price-col">
               <span className="current-price">{formatPrice(product.price)}</span>
             </div>
-            <button className={`add-to-cart-btn ${isAdded ? 'added' : ''}`} onClick={handleAdd}>
-              <ShoppingCart size={18} strokeWidth={isAdded ? 2.5 : 1.5} />
-            </button>
           </div>
+
+          <button 
+            className={`add-to-cart-btn-full ${isAdded ? 'added' : ''}`} 
+            onClick={handleAdd}
+            style={{
+              width: '100%',
+              padding: '8px 0',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              border: isAdded ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
+              backgroundColor: isAdded ? 'var(--color-primary)' : 'transparent',
+              color: isAdded ? '#ffffff' : 'var(--color-text)',
+              fontSize: '0.82rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}
+          >
+            <ShoppingCart size={16} strokeWidth={2} />
+            {isAdded ? "Savatga qo'shildi" : "Savatga qo'shish"}
+          </button>
         </div>
       </Link>
     </div>
