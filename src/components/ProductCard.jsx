@@ -1,5 +1,5 @@
 import { useCart } from '../context/CartContext';
-import { ShoppingCart, Star } from 'lucide-react';
+import { ShoppingBag, Star } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { generateProductUrl } from '../utils/helpers';
@@ -130,23 +130,31 @@ const ProductCard = ({ product }) => {
             onClick={handleAdd}
             style={{
               width: '100%',
-              padding: '8px 0',
-              borderRadius: '8px',
+              padding: '10px 0',
+              borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              border: isAdded ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
-              backgroundColor: isAdded ? 'var(--color-primary)' : 'transparent',
-              color: isAdded ? '#ffffff' : 'var(--color-text)',
-              fontSize: '0.82rem',
+              border: 'none',
+              backgroundColor: isAdded ? '#10B981' : 'var(--color-primary)',
+              color: '#ffffff',
+              fontSize: '0.92rem',
               fontWeight: '600',
               cursor: 'pointer',
-              transition: 'all 0.2s'
+              transition: 'all 0.2s ease',
+              boxShadow: '0 4px 12px rgba(255, 51, 102, 0.15)',
+              marginTop: 'auto'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.opacity = '0.9';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.opacity = '1';
             }}
           >
-            <ShoppingCart size={16} strokeWidth={2} />
-            {isAdded ? "Savatga qo'shildi" : "Savatga qo'shish"}
+            <ShoppingBag size={18} strokeWidth={2} />
+            <span>{isAdded ? "Savatda" : "Savatga"}</span>
           </button>
         </div>
       </Link>
