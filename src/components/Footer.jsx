@@ -1,7 +1,11 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, Mail } from 'lucide-react';
+import { Mail, ChevronDown } from 'lucide-react';
 
 const Footer = () => {
+  const [isMijozlarOpen, setIsMijozlarOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
+
   return (
     <footer className="custom-footer">
       <div className="container custom-footer-container">
@@ -25,17 +29,31 @@ const Footer = () => {
           </div>
 
           <div className="footer-links-area">
-
-            <div className="footer-link-group">
-              <h4>Mijozlar uchun</h4>
-              <Link to="/delivery">Yetkazib berish</Link>
-              <Link to="/payments">To'lov usullari</Link>
-              <Link to="/faq">FAQ</Link>
+            <div className={`footer-link-group ${isMijozlarOpen ? 'is-open' : ''}`}>
+              <h4 className="footer-group-header" onClick={() => setIsMijozlarOpen(!isMijozlarOpen)}>
+                Mijozlar uchun
+                <ChevronDown className="footer-chevron" size={18} />
+              </h4>
+              <div className="footer-group-content">
+                <Link to="/delivery">Yetkazib berish</Link>
+                <Link to="/payments">To'lov usullari</Link>
+                <Link to="/faq">FAQ</Link>
+              </div>
             </div>
-            <div className="footer-link-group">
-              <h4>Bog'lanish</h4>
-              <a href="mailto:hello@lumiere.uz" className="contact-link"><Mail size={16}/> hello@lumiere.uz</a>
-              <a href="tel:+998901234567" className="contact-link">+998 90 123 45 67</a>
+
+            <div className={`footer-link-group ${isContactOpen ? 'is-open' : ''}`}>
+              <h4 className="footer-group-header" onClick={() => setIsContactOpen(!isContactOpen)}>
+                Bog'lanish
+                <ChevronDown className="footer-chevron" size={18} />
+              </h4>
+              <div className="footer-group-content">
+                <a href="mailto:hello@lumiere.uz" className="contact-link">
+                  <Mail size={16}/> hello@lumiere.uz
+                </a>
+                <a href="tel:+998901234567" className="contact-link">
+                  +998 90 123 45 67
+                </a>
+              </div>
             </div>
           </div>
         </div>

@@ -620,10 +620,20 @@ img {
   display: flex;
   flex-direction: column;
 }
-.footer-link-group h4 {
+.footer-group-header {
   font-size: 1.05rem;
   font-weight: 600;
   margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-chevron {
+  display: none;
+}
+.footer-group-content {
+  display: flex;
+  flex-direction: column;
 }
 .footer-link-group a {
   color: var(--color-text-muted);
@@ -712,26 +722,61 @@ img {
   .footer-links-area {
     width: 100%;
     flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
+    align-items: stretch;
+    gap: 0;
     border-top: 1px solid var(--color-border);
-    padding-top: 1.75rem;
+    padding-top: 0.5rem;
   }
   .footer-link-group {
-    align-items: center;
-    text-align: center;
+    align-items: stretch;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.5rem 0;
   }
-  .footer-link-group h4 {
+  .footer-group-header {
     font-size: 0.98rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0 !important;
     color: var(--color-text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.75rem 0.5rem;
+    user-select: none;
+    transition: color 0.2s;
+  }
+  .footer-group-header:hover {
+    color: var(--color-primary);
+  }
+  .footer-chevron {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--color-text-muted);
+  }
+  .footer-link-group.is-open .footer-chevron {
+    transform: rotate(180deg);
+    color: var(--color-primary);
+  }
+  .footer-group-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, padding 0.3s ease;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0 0.5rem;
+  }
+  .footer-link-group.is-open .footer-group-content {
+    max-height: 200px;
+    opacity: 1;
+    padding: 0.25rem 0.5rem 0.75rem 0.5rem;
   }
   .footer-link-group a {
-    font-size: 0.82rem;
-    margin-bottom: 0.5rem;
+    font-size: 0.88rem;
+    margin-bottom: 0.75rem;
   }
   .contact-link {
-    justify-content: center;
+    justify-content: flex-start;
   }
   .footer-bottom-bar {
     padding: 1.25rem 0;
