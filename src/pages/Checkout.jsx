@@ -150,6 +150,12 @@ const Checkout = () => {
       return;
     }
 
+    const cleanPhoneDigits = phone.replace(/[^\d]/g, '');
+    if (cleanPhoneDigits.length < 12) {
+      showAlert("Telefon raqami noto'g'ri! Iltimos, to'liq kiriting: +998 xx xxx xx xx", "error");
+      return;
+    }
+
     if (localStorage.getItem('user_logged_in') !== 'true') {
       setShowLoginModal(true);
       return;
@@ -242,8 +248,9 @@ const Checkout = () => {
         return;
       }
     } else if (paymentMethod === 'click' && clickPayType === 'wallet') {
-      if (!clickWalletPhone || clickWalletPhone.length < 9) {
-        showAlert("Iltimos, Click hamyonga ulangan telefon raqamingizni to'liq kiriting!", "error");
+      const cleanWalletPhoneDigits = clickWalletPhone.replace(/[^\d]/g, '');
+      if (cleanWalletPhoneDigits.length < 12) {
+        showAlert("Iltimos, Click hamyonga ulangan telefon raqamingizni to'liq kiriting: +998 xx xxx xx xx", "error");
         return;
       }
     }
