@@ -25,10 +25,7 @@ const Footer = () => {
           </div>
 
           <div className="footer-links-area">
-            <div className="footer-link-group">
-              <h4>Do'kon</h4>
-              <Link to="/shop">Katalog</Link>
-            </div>
+
             <div className="footer-link-group">
               <h4>Mijozlar uchun</h4>
               <Link to="/delivery">Yetkazib berish</Link>
