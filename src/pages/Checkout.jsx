@@ -864,6 +864,42 @@ const Checkout = () => {
         @keyframes scaleInModal {
           to { transform: scale(1) translateY(0); }
         }
+
+        .success-modal-card {
+          background: #ffffff;
+          border-radius: 24px;
+          padding: 2.5rem 2.25rem;
+          width: 90%;
+          max-width: 520px;
+          text-align: center;
+          box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+          position: relative;
+          transform: scale(0.96);
+          animation: scaleInModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          max-height: 95vh;
+          overflow-y: auto;
+        }
+
+        .success-modal-buttons {
+          display: flex;
+          gap: 12px;
+        }
+
+        @media (max-width: 480px) {
+          .success-modal-card {
+            padding: 1.75rem 1.25rem;
+            border-radius: 20px;
+          }
+          .success-modal-buttons {
+            flex-direction: column;
+            gap: 10px;
+          }
+          .success-modal-buttons button {
+            width: 100% !important;
+            padding: 0.8rem !important;
+            font-size: 0.88rem !important;
+          }
+        }
       `}</style>
 
       <div className="checkout-container">
@@ -1506,18 +1542,7 @@ const Checkout = () => {
           setShowSuccessModal(false);
           navigate('/');
         }}>
-          <div style={{
-            background: '#ffffff',
-            borderRadius: '24px',
-            padding: '2.5rem 2.25rem',
-            width: '90%',
-            maxWidth: '520px',
-            textAlign: 'center',
-            boxShadow: '0 20px 45px rgba(0, 0, 0, 0.12)',
-            position: 'relative',
-            transform: 'scale(0.96)',
-            animation: 'scaleInModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards'
-          }} onClick={(e) => e.stopPropagation()}>
+          <div className="success-modal-card" onClick={(e) => e.stopPropagation()}>
             
             {/* Top Right Close Button */}
             <button 
@@ -1648,7 +1673,7 @@ const Checkout = () => {
             </div>
 
             {/* Bottom Actions */}
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div className="success-modal-buttons">
               <button 
                 type="button" 
                 onClick={() => {
