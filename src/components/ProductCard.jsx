@@ -1,11 +1,13 @@
 import { useCart } from '../context/CartContext';
-import { ShoppingBag, Star } from 'lucide-react';
+import { ShoppingBag, Star, Minus, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { generateProductUrl } from '../utils/helpers';
 
 const ProductCard = ({ product }) => {
-  const { addToCart } = useCart();
+  const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
+  const cartItem = cart?.find(item => item.id === product.id);
+  const quantityInCart = cartItem ? cartItem.quantity : 0;
   const [isAdded, setIsAdded] = useState(false);
   const [dbReviews, setDbReviews] = useState([]);
 
@@ -125,37 +127,119 @@ const ProductCard = ({ product }) => {
             </div>
           </div>
 
-          <button 
-            className={`add-to-cart-btn-full ${isAdded ? 'added' : ''}`} 
-            onClick={handleAdd}
-            style={{
-              width: '100%',
-              padding: '10px 0',
-              borderRadius: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              border: 'none',
-              backgroundColor: isAdded ? '#10B981' : 'var(--color-primary)',
-              color: '#ffffff',
-              fontSize: '0.92rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 4px 12px rgba(255, 51, 102, 0.15)',
-              marginTop: 'auto'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.opacity = '0.9';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.opacity = '1';
-            }}
-          >
-            <ShoppingBag size={18} strokeWidth={2} />
-            <span>{isAdded ? "Savatda" : "Savatga"}</span>
-          </button>
+          {quantityInCart > 0 ? (
+            <div 
+              style={{
+                width: '100%',
+                height: '40px',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                backgroundColor: 'var(--color-primary)',
+                color: '#ffffff',
+                fontSize: '1rem',
+                fontWeight: '700',
+                overflow: 'hidden',
+                marginTop: 'auto',
+                boxShadow: '0 4px 12px rgba(255, 51, 102, 0.15)'
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (quantityInCart === 1) {
+                    removeFromCart(product.id);
+                  } else {
+                    updateQuantity(product.id, quantityInCart - 1);
+                  }
+                }}
+                style={{
+                  width: '40px',
+                  height: '100%',
+                  background: 'none',
+                  border: 'none',
+                  color: '#ffffff',
+                  fontSize: '1.25rem',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                <Minus size={16} strokeWidth={2.5} />
+              </button>
+              
+              <span style={{ userSelect: 'none' }}>{quantityInCart}</span>
+              
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  updateQuantity(product.id, quantityInCart + 1);
+                }}
+                style={{
+                  width: '40px',
+                  height: '100%',
+                  background: 'none',
+                  border: 'none',
+                  color: '#ffffff',
+                  fontSize: '1.25rem',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                <Plus size={16} strokeWidth={2.5} />
+              </button>
+            </div>
+          ) : (
+            <button 
+              className="add-to-cart-btn-full" 
+              onClick={handleAdd}
+              style={{
+                width: '100%',
+                padding: '10px 0',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                border: 'none',
+                backgroundColor: 'var(--color-primary)',
+                color: '#ffffff',
+                fontSize: '0.92rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 4px 12px rgba(255, 51, 102, 0.15)',
+                marginTop: 'auto'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.opacity = '0.9';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.opacity = '1';
+              }}
+            >
+              <ShoppingBag size={18} strokeWidth={2} />
+              <span>Savatga</span>
+            </button>
+          )}
         </div>
       </Link>
     </div>
