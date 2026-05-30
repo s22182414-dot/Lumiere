@@ -307,7 +307,7 @@ const Seller = () => {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/verify', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role: 'seller', password })
@@ -344,7 +344,7 @@ const Seller = () => {
     setIsChangingPw(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/change-password', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/change-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role: 'seller', currentPassword: currentPw, newPassword: newPw })
@@ -402,7 +402,7 @@ const Seller = () => {
     const loadOrders = async () => {
       try {
         setLoadingOrders(true);
-        const res = await fetch('http://localhost:5000/api/seller/orders');
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/seller/orders`);
         if (res.ok) {
           const data = await res.json();
           setDbOrders(data);
@@ -429,7 +429,7 @@ const Seller = () => {
   const loadBanners = async () => {
     try {
       setLoadingBanners(true);
-      const res = await fetch('http://localhost:5000/api/banners');
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/banners`);
       if (res.ok) {
         const data = await res.json();
         setBanners(data);
@@ -483,13 +483,13 @@ const Seller = () => {
       const payload = { ...bannerForm, image: imageUrl };
       let res;
       if (editingBanner) {
-        res = await fetch(`http://localhost:5000/api/banners/${editingBanner._id}`, {
+        res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/banners/${editingBanner._id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
       } else {
-        res = await fetch('http://localhost:5000/api/banners', {
+        res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/banners`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -514,14 +514,14 @@ const Seller = () => {
   const handleDeleteBanner = async (id) => {
     if (!confirm('Bu bannerni o\'chirmoqchimisiz?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/banners/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/banners/${id}`, { method: 'DELETE' });
       if (res.ok) { await loadBanners(); notifyBannerChange(); }
     } catch { alert('Xatolik!'); }
   };
 
   const handleToggleBannerActive = async (banner) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/banners/${banner._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/banners/${banner._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ active: !banner.active })
@@ -537,7 +537,7 @@ const Seller = () => {
     [newBanners[index], newBanners[targetIndex]] = [newBanners[targetIndex], newBanners[index]];
     const orders = newBanners.map((b, i) => ({ id: b._id, order: i }));
     try {
-      const res = await fetch('http://localhost:5000/api/banners/reorder/bulk', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/banners/reorder/bulk`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orders })
@@ -548,7 +548,7 @@ const Seller = () => {
 
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders/${orderId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })

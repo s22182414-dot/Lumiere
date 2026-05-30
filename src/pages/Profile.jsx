@@ -84,7 +84,7 @@ const Profile = () => {
 
   const fetchOrders = async (tgId) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/${tgId}`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders/${tgId}`);
       if (res.ok) {
         const data = await res.json();
         const flattenedItems = [];
@@ -118,7 +118,7 @@ const Profile = () => {
 
   const fetchReviews = async (tgId) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/reviews?telegramId=${tgId}`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews?telegramId=${tgId}`);
       if (res.ok) {
         const data = await res.json();
         const formatted = data.map(r => ({
@@ -203,7 +203,7 @@ const Profile = () => {
     };
 
     try {
-      const res = await fetch('http://localhost:5000/api/reviews', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reviewData)
@@ -246,7 +246,7 @@ const Profile = () => {
   const handleDeleteReview = async (id) => {
     if (window.confirm("Ushbu sharhni o'chirmoqchimisiz?")) {
       try {
-        const res = await fetch(`http://localhost:5000/api/reviews/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews/${id}`, {
           method: 'DELETE'
         });
         if (res.ok) {

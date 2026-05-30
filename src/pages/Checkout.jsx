@@ -81,7 +81,7 @@ const Checkout = () => {
     const telegramId = localStorage.getItem('user_telegram_id');
     if (telegramId && telegramId !== 'offline') {
       try {
-        await fetch('http://localhost:5000/api/send-otp', {
+        await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/send-otp`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ telegramId, message: messageText })
@@ -185,7 +185,7 @@ const Checkout = () => {
     };
 
     try {
-      const res = await fetch('http://localhost:5000/api/orders', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
@@ -274,7 +274,7 @@ const Checkout = () => {
     };
 
     try {
-      const res = await fetch('http://localhost:5000/api/orders', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
@@ -288,7 +288,7 @@ const Checkout = () => {
         // 2. NOW call Click/Payme Prepare Webhooks to verify amount/account details
         if (paymentMethod === 'click') {
           // Call Click POST /api/payment/click (Action = 0: Prepare)
-          const clickRes = await fetch('http://localhost:5000/api/payment/click', {
+          const clickRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payment/click`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -308,7 +308,7 @@ const Checkout = () => {
           }
         } else if (paymentMethod === 'payme') {
           // Call Payme CheckPerformTransaction JSON-RPC method
-          const paymeRes = await fetch('http://localhost:5000/api/payment/payme', {
+          const paymeRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payment/payme`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -326,7 +326,7 @@ const Checkout = () => {
           }
 
           // Trigger Payme CreateTransaction method
-          await fetch('http://localhost:5000/api/payment/payme', {
+          await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payment/payme`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -373,7 +373,7 @@ const Checkout = () => {
     try {
       // 4. NOW call Click/Payme CONFIRM (Action = 1: Complete or PerformTransaction) Webhook
       if (paymentMethod === 'click') {
-        const clickRes = await fetch('http://localhost:5000/api/payment/click', {
+        const clickRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payment/click`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -393,7 +393,7 @@ const Checkout = () => {
         }
       } else if (paymentMethod === 'payme') {
         // Trigger Payme PerformTransaction json-rpc API call
-        const paymeRes = await fetch('http://localhost:5000/api/payment/payme', {
+        const paymeRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payment/payme`, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',

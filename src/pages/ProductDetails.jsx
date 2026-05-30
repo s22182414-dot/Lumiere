@@ -81,7 +81,7 @@ const ProductDetails = () => {
       };
 
       try {
-        const res = await fetch(`http://localhost:5000/api/reviews?productId=${product.id}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews?productId=${product.id}`);
         if (res.ok) {
           const data = await res.json();
           setDbReviews(data);
@@ -96,7 +96,7 @@ const ProductDetails = () => {
 
     const fetchOrdersCount = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/orders/count?productId=${product.id}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders/count?productId=${product.id}`);
         if (res.ok) {
           const data = await res.json();
           setOrdersCount(data.count || 0);
@@ -178,7 +178,7 @@ const ProductDetails = () => {
     };
 
     try {
-      const res = await fetch('http://localhost:5000/api/reviews', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reviewData)

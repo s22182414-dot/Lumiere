@@ -47,7 +47,7 @@ const BannerDetails = () => {
         // Load banners from API
         let matchedBanner = null;
         try {
-          const res = await fetch('http://localhost:5000/api/banners');
+          const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/banners`);
           if (res.ok) {
             const data = await res.json();
             matchedBanner = data.find(b => String(b._id) === String(id));
