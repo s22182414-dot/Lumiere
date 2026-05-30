@@ -1,0 +1,160 @@
+import { Link, useNavigate } from 'react-router-dom';
+import ProductCard from '../components/ProductCard';
+import { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, X, ShoppingCart } from 'lucide-react';
+import { cloudDb } from '../services/cloudDb';
+import { useCart } from '../context/CartContext';
+
+const DEFAULT_BANNERS = [
+  {
+    title: "Go'zallik bayrami",
+    desc: "Yuqori sifatli va eksklyuziv kosmetika to'plamlari",
+    image: "/beauty_banner_one.png",
+    bg: "linear-gradient(135deg, #FF3366, #FF8DA1)"
+  },
+  {
+    title: "Koreya kosmetikasi",
+    desc: "Yangi brendlar va eksklyuziv mahsulotlar keldi",
+    image: "/korean_beauty_two.png",
+    bg: "linear-gradient(135deg, #00B533, #66E088)"
+  },
+  {
+    title: "Kuzgi parvarish",
+    desc: "Teringiz uchun eng yaxshi namlantiruvchi vositalar",
+    image: "/autumn_care_three.png",
+    bg: "linear-gradient(135deg, #7000FF, #B366FF)"
+  }
+];
+
+const Home = () => {
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [localProducts, setLocalProducts] = useState([]);
+  const [banners, setBanners] = useState(DEFAULT_BANNERS);
+
+  const handleBannerClick = (banner) => {
+    navigate(`/banner/${banner._id}`);
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await cloudDb.getProducts();
+      setLocalProducts(data);
+    };
+    loadData();
+  }, []);
+
+  const loadBanners = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/banners');
+      if (res.ok) {
+        const data = await res.json();
+        const activeBanners = data.filter(b => b.active !== false);
+        if (activeBanners && activeBanners.length > 0) {
+          setBanners(activeBanners);
+        } else {
+          setBanners(DEFAULT_BANNERS);
+        }
+      } else {
+        setBanners(DEFAULT_BANNERS);
+      }
+    } catch {
+      setBanners(DEFAULT_BANNERS);
+    }
+  };
+
+  useEffect(() => {
+    loadBanners();
+
+    const handleStorageChange = (e) => {
+      if (e.key === 'banner_updated_at') {
+        loadBanners();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('banner_updated', loadBanners);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('banner_updated', loadBanners);
+    };
+  }, []);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % banners.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
+  };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [banners.length]);
+
+  return (
+    <div className="page-home">
+      <section className="banner-section container">
+        <div className="carousel-container">
+          <button className="carousel-arrow left-arrow" onClick={prevSlide} aria-label="Oldingi slayd">
+            <ChevronLeft size={24} />
+          </button>
+          
+          <div 
+            className="carousel-track" 
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {banners.map((banner, index) => (
+              <div 
+                className="banner carousel-slide clickable-banner" 
+                key={index}
+                onClick={() => handleBannerClick(banner)}
+              >
+                <img 
+                  src={banner.image} 
+                  alt={banner.title} 
+                  className="banner-bg-img"
+                />
+                <div className="banner-overlay" />
+                <div className="banner-text-content">
+                  <h1>{banner.title}</h1>
+                  <p>{banner.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button className="carousel-arrow right-arrow" onClick={nextSlide} aria-label="Keyingi slayd">
+            <ChevronRight size={24} />
+          </button>
+          <div className="carousel-dots">
+            {banners.map((_, index) => (
+              <button 
+                key={index} 
+                className={`carousel-dot ${currentSlide === index ? 'active' : ''}`}
+                onClick={() => setCurrentSlide(index)}
+                aria-label={`Slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="products-section container">
+        <h2 className="section-title">Ommabop mahsulotlar</h2>
+        <div className="products-grid">
+          {localProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
+
+    </div>
+  );
+};
+
+export default Home;
