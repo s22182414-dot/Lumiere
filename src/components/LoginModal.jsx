@@ -113,16 +113,16 @@ const LoginModal = ({ isOpen, onClose }) => {
         .tg-login-btn {
           display:flex; align-items:center; justify-content:center; gap:12px;
           width:100%; padding:1rem 1.5rem;
-          background:linear-gradient(135deg,#229ED9,#1a7ab5);
+          background:linear-gradient(135deg,#FF3366,#FF6688);
           color:white; border:none; border-radius:14px;
           font-size:1.05rem; font-weight:700; cursor:pointer;
-          box-shadow:0 6px 20px rgba(34,158,217,0.4);
+          box-shadow:0 6px 20px rgba(255, 51, 102, 0.35);
           transition:all 0.2s; letter-spacing:0.2px;
         }
         .tg-login-btn:hover:not(:disabled) {
-          background:linear-gradient(135deg,#1d8ec1,#1567a3);
+          background:linear-gradient(135deg,#E62E5C,#FF5577);
           transform:translateY(-2px);
-          box-shadow:0 8px 24px rgba(34,158,217,0.5);
+          box-shadow:0 8px 24px rgba(255, 51, 102, 0.45);
         }
         .tg-login-btn:active { transform:translateY(0); }
         .tg-login-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
@@ -197,14 +197,14 @@ const LoginModal = ({ isOpen, onClose }) => {
             <div style={{ position:'relative', width:'72px', height:'72px' }}>
               <div style={{
                 position:'absolute', inset:'-8px', borderRadius:'50%',
-                background:'rgba(34,158,217,0.15)',
+                background:'rgba(255,51,102,0.15)',
                 animation:'lgPulse 1.6s ease-in-out infinite'
               }}/>
               <div style={{
                 width:'72px', height:'72px', borderRadius:'50%',
-                background:'linear-gradient(135deg,#229ED9,#1a7ab5)',
+                background:'linear-gradient(135deg,#FF3366,#FF6688)',
                 display:'flex', alignItems:'center', justifyContent:'center',
-                boxShadow:'0 4px 16px rgba(34,158,217,0.4)'
+                boxShadow:'0 4px 16px rgba(255,51,102,0.4)'
               }}>
                 <svg width="38" height="38" viewBox="0 0 24 24" fill="white">
                   <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.012 9.483c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.26 14.4l-2.948-.924c-.64-.203-.655-.64.136-.948l11.527-4.444c.533-.194 1.002.131.587.164z"/>
