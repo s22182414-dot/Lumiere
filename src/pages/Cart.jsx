@@ -58,7 +58,7 @@ const Cart = () => {
   }
 
   return (
-    <div className="page-cart container" style={{ padding: '3rem 1rem' }}>
+    <div className="page-cart container">
       <style>{`
         .cart-product-link {
           transition: all 0.2s ease;
@@ -75,27 +75,17 @@ const Cart = () => {
         }
       `}</style>
 
-      <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '1.5rem' }}>
+      <h1 className="cart-title">
         Savatingizda <span style={{ color: 'var(--color-primary)' }}>{cart.length} ta mahsulot</span>
       </h1>
       
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
+      <div className="cart-grid">
         
         {/* Left Side (Cart Items List) */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className="cart-items-list">
           
           {/* Select All Bar */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            backgroundColor: 'var(--color-surface)',
-            padding: '0.9rem 1.25rem',
-            borderRadius: '12px',
-            border: '1px solid var(--color-border)',
-            boxShadow: 'var(--shadow-sm)',
-            marginBottom: '0.25rem'
-          }}>
+          <div className="cart-select-all-bar">
             <div 
               onClick={handleToggleSelectAll}
               style={{
@@ -127,34 +117,16 @@ const Cart = () => {
           </div>
 
           {cart.map(item => (
-            <div key={item.id} style={{
-              display: 'flex', 
-              justifyContent: 'space-between',
-              gap: '1.5rem',
-              backgroundColor: 'var(--color-surface)',
-              padding: '1.25rem',
-              borderRadius: '16px',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid var(--color-border)',
-              alignItems: 'center',
-              opacity: item.selected !== false ? 1 : 0.8,
-              transition: 'opacity 0.25s ease'
+            <div key={item.id} className="cart-item-row" style={{
+              opacity: item.selected !== false ? 1 : 0.8
             }}>
               {/* Checkbox */}
               <div 
                 onClick={() => toggleSelect(item.id)}
+                className="cart-item-checkbox"
                 style={{
-                  width: '22px',
-                  height: '22px',
-                  borderRadius: '6px',
                   border: item.selected !== false ? '2px solid var(--color-primary)' : '2px solid #cbd5e1',
-                  backgroundColor: item.selected !== false ? 'var(--color-primary)' : 'transparent',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  flexShrink: 0,
-                  transition: 'all 0.15s ease'
+                  backgroundColor: item.selected !== false ? 'var(--color-primary)' : 'transparent'
                 }}
               >
                 {item.selected !== false && (
@@ -165,30 +137,28 @@ const Cart = () => {
               </div>
 
               {/* Product link (Image + Title/Category) */}
-              <Link to={`/product/${item.id}`} className="cart-product-link" style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', textDecoration: 'none', color: 'inherit', flex: 1, minWidth: 0 }}>
-                <img src={item.image} alt={item.name} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '12px', border: '1px solid var(--color-border)', flexShrink: 0 }} />
+              <Link to={`/product/${item.id}`} className="cart-product-link">
+                <img src={item.image} alt={item.name} className="cart-item-img" />
                 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: 0 }}>
-                  <h3 className="cart-item-title" style={{ fontSize: '0.95rem', fontWeight: '700', color: 'var(--color-text)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', transition: 'color 0.2s' }}>{item.name}</h3>
-                  <p style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem', margin: 0 }}>Kategoriya: {item.category || 'Kosmetika'}</p>
+                <div className="cart-item-info">
+                  <h3 className="cart-item-title">{item.name}</h3>
+                  <p className="cart-item-category">Kategoriya: {item.category || 'Kosmetika'}</p>
                 </div>
               </Link>
               
               {/* Quantity selector */}
-              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--color-border)', borderRadius: '8px', overflow: 'hidden', background: '#f8fafc', flexShrink: 0 }}>
-                <button onClick={() => updateQuantity(item.id, item.quantity - 1)} style={{ padding: '0.35rem 0.75rem', fontSize: '1.1rem', backgroundColor: '#f1f3f5', border: 'none', cursor: 'pointer' }}>-</button>
-                <span style={{ padding: '0 1rem', fontSize: '0.9rem', fontWeight: '700' }}>{item.quantity}</span>
-                <button onClick={() => updateQuantity(item.id, item.quantity + 1)} style={{ padding: '0.35rem 0.75rem', fontSize: '1.1rem', backgroundColor: '#f1f3f5', border: 'none', cursor: 'pointer' }}>+</button>
+              <div className="cart-item-quantity">
+                <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="cart-quantity-btn">-</button>
+                <span className="cart-quantity-val">{item.quantity}</span>
+                <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="cart-quantity-btn">+</button>
               </div>
 
               {/* Price and Delete */}
-              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end', gap: '8px', minWidth: '120px', flexShrink: 0 }}>
-                <div style={{ fontSize: '1.1rem', fontWeight: '800', color: 'var(--color-text)' }}>{formatPrice(item.price * item.quantity)}</div>
+              <div className="cart-item-actions">
+                <div className="cart-item-price">{formatPrice(item.price * item.quantity)}</div>
                 <button 
                   onClick={() => removeFromCart(item.id)}
-                  style={{ color: '#e53e3e', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.82rem', background: 'none', border: 'none', cursor: 'pointer', padding: '6px', borderRadius: '6px' }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = '#fff5f5'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                  className="cart-item-delete"
                 >
                   <Trash2 size={15} /> O'chirish
                 </button>
@@ -199,16 +169,8 @@ const Cart = () => {
  
         {/* Right Side (Order Checkout Panel) */}
         <div>
-          <div style={{
-            backgroundColor: 'var(--color-surface)',
-            padding: '1.75rem',
-            borderRadius: '16px',
-            boxShadow: 'var(--shadow-sm)',
-            border: '1px solid var(--color-border)',
-            position: 'sticky',
-            top: '100px'
-          }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.75rem' }}>Buyurtmangiz</h2>
+          <div className="cart-checkout-panel">
+            <h2 className="cart-panel-title">Buyurtmangiz</h2>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
               <span>Mahsulotlar ({selectedItems.length} xil):</span>
