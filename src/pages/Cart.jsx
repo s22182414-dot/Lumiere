@@ -120,48 +120,54 @@ const Cart = () => {
             <div key={item.id} className="cart-item-row" style={{
               opacity: item.selected !== false ? 1 : 0.8
             }}>
-              {/* Checkbox */}
-              <div 
-                onClick={() => toggleSelect(item.id)}
-                className="cart-item-checkbox"
-                style={{
-                  border: item.selected !== false ? '2px solid var(--color-primary)' : '2px solid #cbd5e1',
-                  backgroundColor: item.selected !== false ? 'var(--color-primary)' : 'transparent'
-                }}
-              >
-                {item.selected !== false && (
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                )}
-              </div>
-
-              {/* Product link (Image + Title/Category) */}
-              <Link to={`/product/${item.id}`} className="cart-product-link">
-                <img src={item.image} alt={item.name} className="cart-item-img" />
-                
-                <div className="cart-item-info">
-                  <h3 className="cart-item-title">{item.name}</h3>
-                  <p className="cart-item-category">Kategoriya: {item.category || 'Kosmetika'}</p>
-                </div>
-              </Link>
-              
-              {/* Quantity selector */}
-              <div className="cart-item-quantity">
-                <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="cart-quantity-btn">-</button>
-                <span className="cart-quantity-val">{item.quantity}</span>
-                <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="cart-quantity-btn">+</button>
-              </div>
-
-              {/* Price and Delete */}
-              <div className="cart-item-actions">
-                <div className="cart-item-price">{formatPrice(item.price * item.quantity)}</div>
-                <button 
-                  onClick={() => removeFromCart(item.id)}
-                  className="cart-item-delete"
+              {/* Left/Main Column: Checkbox + Link */}
+              <div className="cart-item-main-group">
+                {/* Checkbox */}
+                <div 
+                  onClick={() => toggleSelect(item.id)}
+                  className="cart-item-checkbox"
+                  style={{
+                    border: item.selected !== false ? '2px solid var(--color-primary)' : '2px solid #cbd5e1',
+                    backgroundColor: item.selected !== false ? 'var(--color-primary)' : 'transparent'
+                  }}
                 >
-                  <Trash2 size={15} /> O'chirish
-                </button>
+                  {item.selected !== false && (
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  )}
+                </div>
+
+                {/* Product link (Image + Title/Category) */}
+                <Link to={`/product/${item.id}`} className="cart-product-link">
+                  <img src={item.image} alt={item.name} className="cart-item-img" />
+                  
+                  <div className="cart-item-info">
+                    <h3 className="cart-item-title">{item.name}</h3>
+                    <p className="cart-item-category">Kategoriya: {item.category || 'Kosmetika'}</p>
+                  </div>
+                </Link>
+              </div>
+              
+              {/* Right/Bottom Actions Column: Quantity + Price/Delete */}
+              <div className="cart-item-action-group">
+                {/* Quantity selector */}
+                <div className="cart-item-quantity">
+                  <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="cart-quantity-btn">-</button>
+                  <span className="cart-quantity-val">{item.quantity}</span>
+                  <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="cart-quantity-btn">+</button>
+                </div>
+
+                {/* Price and Delete */}
+                <div className="cart-item-actions">
+                  <div className="cart-item-price">{formatPrice(item.price * item.quantity)}</div>
+                  <button 
+                    onClick={() => removeFromCart(item.id)}
+                    className="cart-item-delete"
+                  >
+                    <Trash2 size={15} /> O'chirish
+                  </button>
+                </div>
               </div>
             </div>
           ))}
