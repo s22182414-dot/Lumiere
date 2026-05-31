@@ -1314,61 +1314,41 @@ const Seller = () => {
         </main>
       </div>
 
-      {/* ADD NEW PRODUCT MODAL */}
+      {/* ADD / EDIT PRODUCT MODAL */}
       {showAddModal && (
-        <div 
-          onClick={handleCloseModal}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            backdropFilter: 'blur(4px)'
-          }}
-        >
-          <div 
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              backgroundColor: 'var(--color-surface)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '2rem',
-              width: '100%',
-              maxWidth: '500px',
-              boxShadow: 'var(--shadow-md)',
-              maxHeight: '90vh',
-              overflowY: 'auto'
-            }}
-          >
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '1.5rem' }}>
-              {editingProduct ? "Mahsulotni tahrirlash" : "Yangi mahsulot qo'shish"}
+        <div className="prod-modal-overlay" onClick={handleCloseModal}>
+          <div className="prod-modal-box" onClick={(e) => e.stopPropagation()}>
+
+            {/* Bottom-sheet handle (mobile only) */}
+            <div className="prod-modal-handle" />
+
+            <h3 className="prod-modal-title">
+              {editingProduct ? 'Mahsulotni tahrirlash' : "Yangi mahsulot qo'shish"}
             </h3>
-            
-            <form onSubmit={handleSaveProduct} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '0.85rem', fontWeight: '600' }}>Nomi</label>
-                <input 
-                  type="text" 
-                  placeholder="Masalan: Garnier tozalovchi suvi..." 
+
+            <form className="prod-modal-form" onSubmit={handleSaveProduct}>
+
+              {/* Nomi */}
+              <div className="prod-field">
+                <label className="prod-label">Nomi</label>
+                <input
+                  className="prod-input"
+                  type="text"
+                  placeholder="Masalan: Garnier tozalovchi suvi..."
                   value={newProdName}
                   onChange={(e) => setNewProdName(e.target.value)}
-                  required 
-                  style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid var(--color-border)', outline: 'none' }} 
+                  required
                 />
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '0.85rem', fontWeight: '600' }}>Kategoriya</label>
-                <select 
+              {/* Kategoriya */}
+              <div className="prod-field">
+                <label className="prod-label">Kategoriya</label>
+                <select
+                  className="prod-input"
                   value={newProdCategory}
                   onChange={(e) => setNewProdCategory(e.target.value)}
                   required
-                  style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid var(--color-border)', outline: 'none' }}
                 >
                   <option value="" disabled>Kategoriyani tanlang</option>
                   <option value="Terini parvarishlash">Terini parvarishlash</option>
@@ -1379,212 +1359,148 @@ const Seller = () => {
                 </select>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '0.85rem', fontWeight: '600' }}>
-                  Mahsulot rasmlari (Kamida 3 ta rasm)
-                </label>
-                
-                {/* Selected/existing images list */}
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '6px', marginBottom: '4px' }}>
+              {/* Rasmlar */}
+              <div className="prod-field">
+                <label className="prod-label">Mahsulot rasmlari (kamida 3 ta)</label>
+                <div className="prod-images-wrap">
+                  {/* Yangi tanlangan fayllar */}
                   {selectedFiles.length > 0 ? (
-                    selectedFiles.map((file, idx) => {
-                      const previewUrl = URL.createObjectURL(file);
-                      return (
-                        <div key={idx} style={{ position: 'relative', width: '70px', height: '70px', borderRadius: '8px', border: '1px solid var(--color-border)', overflow: 'hidden' }}>
-                          <img src={previewUrl} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                          <button 
-                            type="button"
-                            onClick={() => {
-                              setSelectedFiles(prev => prev.filter((_, i) => i !== idx));
-                            }}
-                            style={{
-                              position: 'absolute',
-                              top: '2px',
-                              right: '2px',
-                              backgroundColor: 'rgba(214, 28, 78, 0.9)',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '50%',
-                              width: '18px',
-                              height: '18px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontSize: '0.75rem',
-                              cursor: 'pointer',
-                              fontWeight: '700'
-                            }}
-                          >
-                            ×
-                          </button>
-                        </div>
-                      );
-                    })
+                    selectedFiles.map((file, idx) => (
+                      <div key={idx} className="prod-img-thumb">
+                        <img src={URL.createObjectURL(file)} alt="preview" />
+                        <button
+                          type="button"
+                          className="prod-img-del"
+                          onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== idx))}
+                        >×</button>
+                      </div>
+                    ))
                   ) : editingProduct ? (
                     (editingProduct.images || [editingProduct.image]).map((imgUrl, idx) => (
-                      <div key={idx} style={{ position: 'relative', width: '70px', height: '70px', borderRadius: '8px', border: '1px solid var(--color-border)', overflow: 'hidden' }}>
-                        <img src={imgUrl} alt="existing" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.85 }} />
+                      <div key={idx} className="prod-img-thumb">
+                        <img src={imgUrl} alt="existing" style={{ opacity: 0.85 }} />
                         <span style={{
-                          position: 'absolute',
-                          bottom: '0',
-                          left: '0',
-                          right: '0',
-                          backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                          color: 'white',
-                          fontSize: '0.6rem',
-                          textAlign: 'center',
-                          padding: '2px 0'
-                        }}>
-                          Mavjud
-                        </span>
+                          position: 'absolute', bottom: 0, left: 0, right: 0,
+                          background: 'rgba(0,0,0,0.6)', color: 'white',
+                          fontSize: '0.58rem', textAlign: 'center', padding: '2px 0'
+                        }}>Mavjud</span>
                       </div>
                     ))
                   ) : null}
 
-                  {/* Dynamic plus-card adder */}
-                  <label style={{
-                    width: '70px',
-                    height: '70px',
-                    borderRadius: '8px',
-                    border: '2px dashed var(--color-primary)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    color: 'var(--color-primary)',
-                    fontSize: '0.7rem',
-                    fontWeight: '600',
-                    backgroundColor: 'rgba(255, 51, 102, 0.02)',
-                    gap: '2px'
-                  }} className="add-img-label-hover">
+                  {/* Qo'shish tugmasi */}
+                  <label className="prod-img-add-label">
                     <Plus size={18} />
-                    <span>{selectedFiles.length > 0 ? "Yana" : "Yuklash"}</span>
-                    <input 
-                      type="file" 
+                    <span>{selectedFiles.length > 0 ? 'Yana' : 'Yuklash'}</span>
+                    <input
+                      type="file"
                       accept="image/*"
+                      style={{ display: 'none' }}
                       onChange={(e) => {
                         if (e.target.files && e.target.files[0]) {
                           setSelectedFiles(prev => [...prev, e.target.files[0]]);
                         }
                       }}
-                      style={{ display: 'none' }} 
                     />
                   </label>
                 </div>
 
+                {/* Hint */}
                 {editingProduct ? (
                   selectedFiles.length > 0 ? (
-                    <span style={{ fontSize: '0.75rem', color: selectedFiles.length >= 3 ? '#00B048' : '#D61C4E', fontWeight: '600' }}>
-                      {selectedFiles.length >= 3 
-                        ? `To'g'ri! Yangi ${selectedFiles.length} ta rasm yuklanadi.` 
+                    <span className="prod-img-hint" style={{ color: selectedFiles.length >= 3 ? '#00B048' : '#D61C4E' }}>
+                      {selectedFiles.length >= 3
+                        ? `To'g'ri! Yangi ${selectedFiles.length} ta rasm yuklanadi.`
                         : `Yangi rasmlar yuklansa, kamida 3 ta bo'lishi shart! (Hozir: ${selectedFiles.length} ta)`}
                     </span>
                   ) : (
-                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: '500' }}>
-                      Yangilamoqchi bo'lsangiz, kamida 3 ta rasm yuklash kerak. Aks holda hozirgi mavjud rasmlar saqlanib qolinadi.
+                    <span className="prod-img-hint" style={{ color: 'var(--color-text-muted)', fontWeight: 500 }}>
+                      Yangilamoqchi bo'lsangiz, kamida 3 ta rasm yuklang. Aks holda hozirgi rasmlar saqlanadi.
                     </span>
                   )
                 ) : (
-                  <span style={{ fontSize: '0.75rem', color: selectedFiles.length >= 3 ? '#00B048' : '#D61C4E', fontWeight: '600' }}>
-                    {selectedFiles.length >= 3 
-                      ? `To'g'ri! ${selectedFiles.length} ta rasm tanlandi.` 
+                  <span className="prod-img-hint" style={{ color: selectedFiles.length >= 3 ? '#00B048' : '#D61C4E' }}>
+                    {selectedFiles.length >= 3
+                      ? `To'g'ri! ${selectedFiles.length} ta rasm tanlandi.`
                       : `Kamida 3 ta rasm yuklang (Hozir: ${selectedFiles.length} ta)`}
                   </span>
                 )}
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '0.85rem', fontWeight: '600' }}>Narxi (so'm)</label>
-                <input 
-                  type="number" 
-                  placeholder="85000" 
+              {/* Narxi */}
+              <div className="prod-field">
+                <label className="prod-label">Narxi (so'm)</label>
+                <input
+                  className="prod-input"
+                  type="number"
+                  placeholder="85000"
                   value={newProdPrice}
                   onChange={(e) => setNewProdPrice(e.target.value)}
-                  required 
-                  style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid var(--color-border)', outline: 'none' }} 
+                  required
                 />
               </div>
 
-              {/* Tavsif olib tashlandi */}
+              {/* Xususiyatlar */}
+              <div className="prod-chars-section">
+                <h4 className="prod-chars-title">Mahsulot xususiyatlari</h4>
 
-              {/* Characteristics Section */}
-              <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '1rem', marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: '700', color: 'var(--color-text)' }}>Mahsulot xususiyatlari</h4>
-                
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--color-text-muted)' }}>Ishlab chiqaruvchi mamlakat</label>
-                    <input 
-                      type="text" 
-                      placeholder="Masalan: Janubiy Koreya" 
+                <div className="prod-chars-grid">
+                  <div className="prod-field">
+                    <label className="prod-label-muted">Ishlab chiqaruvchi mamlakat</label>
+                    <input
+                      className="prod-input"
+                      type="text"
+                      placeholder="Masalan: Janubiy Koreya"
                       value={newProdManufacturer}
                       onChange={(e) => setNewProdManufacturer(e.target.value)}
-                      style={{ padding: '0.5rem 0.6rem', borderRadius: '6px', border: '1px solid var(--color-border)', outline: 'none', fontSize: '0.85rem' }} 
                     />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--color-text-muted)' }}>Kafolat muddati</label>
-                    <input 
-                      type="text" 
-                      placeholder="Masalan: 12 oy" 
+                  <div className="prod-field">
+                    <label className="prod-label-muted">Kafolat muddati</label>
+                    <input
+                      className="prod-input"
+                      type="text"
+                      placeholder="Masalan: 12 oy"
                       value={newProdWarranty}
                       onChange={(e) => setNewProdWarranty(e.target.value)}
-                      style={{ padding: '0.5rem 0.6rem', borderRadius: '6px', border: '1px solid var(--color-border)', outline: 'none', fontSize: '0.85rem' }} 
                     />
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--color-text-muted)' }}>Og'irligi / Hajmi</label>
-                    <input 
-                      type="text" 
-                      placeholder="Masalan: 50 ml" 
+                <div className="prod-chars-grid">
+                  <div className="prod-field">
+                    <label className="prod-label-muted">Og'irligi / Hajmi</label>
+                    <input
+                      className="prod-input"
+                      type="text"
+                      placeholder="Masalan: 50 ml"
                       value={newProdWeightVolume}
                       onChange={(e) => setNewProdWeightVolume(e.target.value)}
-                      style={{ padding: '0.5rem 0.6rem', borderRadius: '6px', border: '1px solid var(--color-border)', outline: 'none', fontSize: '0.85rem' }} 
                     />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <label style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--color-text-muted)' }}>Teri turi</label>
-                    <input 
-                      type="text" 
-                      placeholder="Masalan: Barcha turdagi terilar" 
+                  <div className="prod-field">
+                    <label className="prod-label-muted">Teri turi</label>
+                    <input
+                      className="prod-input"
+                      type="text"
+                      placeholder="Masalan: Barcha turdagi"
                       value={newProdSkinType}
                       onChange={(e) => setNewProdSkinType(e.target.value)}
-                      style={{ padding: '0.5rem 0.6rem', borderRadius: '6px', border: '1px solid var(--color-border)', outline: 'none', fontSize: '0.85rem' }} 
                     />
                   </div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-                <button 
-                  type="button" 
-                  onClick={handleCloseModal}
-                  style={{ flex: 1, padding: '0.75rem', borderRadius: '6px', border: '1px solid var(--color-border)', fontWeight: '600', cursor: 'pointer' }}
-                >
+              {/* Tugmalar */}
+              <div className="prod-modal-actions">
+                <button type="button" className="prod-btn-cancel" onClick={handleCloseModal}>
                   Bekor qilish
                 </button>
-                <button 
-                  type="submit" 
-                  disabled={isSaving}
-                  style={{ 
-                    flex: 1, 
-                    padding: '0.75rem', 
-                    backgroundColor: 'var(--color-primary)', 
-                    color: 'white', 
-                    border: 'none', 
-                    borderRadius: '6px', 
-                    fontWeight: '600', 
-                    cursor: isSaving ? 'not-allowed' : 'pointer',
-                    opacity: isSaving ? 0.7 : 1
-                  }}
-                >
-                  {isSaving ? "Bulutga yuklanmoqda..." : (editingProduct ? "Saqlash" : "Qo'shish")}
+                <button type="submit" className="prod-btn-save" disabled={isSaving}>
+                  {isSaving ? 'Yuklanmoqda...' : (editingProduct ? 'Saqlash' : "Qo'shish")}
                 </button>
               </div>
+
             </form>
           </div>
         </div>
