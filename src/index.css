@@ -2512,5 +2512,116 @@ img {
   }
 }
 
+/* Premium Seller & Admin Responsive Dashboard layouts */
+.seller-admin-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+}
+.seller-admin-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.seller-order-card {
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  background-color: #ffffff;
+}
+.admin-error-card {
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s;
+}
+.seller-banner-preview-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid var(--color-border);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  position: relative;
+  display: grid;
+  grid-template-columns: 60% 40%;
+}
+
+@media (max-width: 900px) {
+  .seller-admin-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .seller-admin-grid aside {
+    width: 100% !important;
+    padding: 1.25rem !important;
+  }
+  .seller-admin-grid main {
+    width: 100% !important;
+    padding: 1.25rem !important;
+    min-height: auto !important;
+  }
+  
+  /* Horizontal scrollable navigation tabs for an incredibly premium mobile view */
+  .seller-admin-sidebar-nav {
+    flex-direction: row !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-top: 0.5rem;
+  }
+  .seller-admin-sidebar-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .seller-admin-sidebar-nav button {
+    white-space: nowrap;
+    width: auto !important;
+    flex-shrink: 0;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.85rem !important;
+  }
+  
+  .seller-banner-preview-card {
+    grid-template-columns: 1fr;
+    height: auto !important;
+  }
+  .seller-banner-preview-card > div {
+    padding: 1.25rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .seller-order-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .seller-order-card > div:last-child {
+    align-items: flex-start !important;
+    border-top: 1px dashed var(--color-border);
+    padding-top: 12px;
+    width: 100%;
+  }
+  
+  .admin-error-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .admin-error-card > div:last-child {
+    justify-content: flex-start !important;
+    border-top: 1px dashed var(--color-border);
+    padding-top: 10px;
+    width: 100%;
+  }
+}
+
 
 

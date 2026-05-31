@@ -64,16 +64,9 @@ const BannerPreview = ({ banners, allProducts }) => {
         </span>
       </div>
 
-      <div style={{
-        borderRadius: '16px',
-        overflow: 'hidden',
-        border: '2px solid var(--color-border)',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.10)',
-        position: 'relative',
+      <div className="seller-banner-preview-card" style={{
         height: linkedProducts.length > 0 ? '280px' : '220px',
         background: current.bg || '#eee',
-        display: 'grid',
-        gridTemplateColumns: '60% 40%',
         transition: 'height 0.35s ease'
       }}>
         {/* Left: Text content */}
@@ -791,6 +784,11 @@ const Seller = () => {
             20%, 60% { transform: translateX(-6px); }
             40%, 80% { transform: translateX(6px); }
           }
+          @media (max-width: 480px) {
+            .pw-card {
+              padding: 2rem 1.25rem !important;
+            }
+          }
         `}</style>
         <div className="pw-card">
           <div style={{
@@ -864,7 +862,7 @@ const Seller = () => {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '2rem' }}>
+      <div className="seller-admin-grid">
         
         {/* SIDEBAR */}
         <aside style={{
@@ -897,7 +895,7 @@ const Seller = () => {
           </div>
 
           {/* Navigation Links */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div className="seller-admin-sidebar-nav">
             <button 
               onClick={() => setActiveTab('dashboard')}
               style={{
@@ -1365,16 +1363,7 @@ const Seller = () => {
                     const paymentInfo = order.customerDetails?.paymentMethod === 'online' ? 'Click / Payme' : 'Naqd pul';
                     
                     return (
-                      <div key={order._id} style={{
-                        padding: '1.25rem',
-                        border: '1px solid var(--color-border)',
-                        borderRadius: 'var(--radius-lg)',
-                        display: 'grid',
-                        gridTemplateColumns: '1fr auto',
-                        alignItems: 'center',
-                        gap: '1.5rem',
-                        backgroundColor: '#ffffff'
-                      }}>
+                      <div key={order._id} className="seller-order-card">
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
                             <span style={{ fontWeight: '700', color: 'var(--color-primary)' }}>#{orderShortId}</span>

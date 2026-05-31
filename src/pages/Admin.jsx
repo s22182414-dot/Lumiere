@@ -296,6 +296,11 @@ const Admin = () => {
             20%, 60% { transform: translateX(-6px); }
             40%, 80% { transform: translateX(6px); }
           }
+          @media (max-width: 480px) {
+            .pw-card {
+              padding: 2rem 1.25rem !important;
+            }
+          }
         `}</style>
         <div className="pw-card">
           <div style={{
@@ -369,7 +374,7 @@ const Admin = () => {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '2rem' }}>
+      <div className="seller-admin-grid">
         
         {/* SIDEBAR */}
         <aside style={{
@@ -403,7 +408,7 @@ const Admin = () => {
           </div>
 
           {/* Sidebar Nav Items */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div className="seller-admin-sidebar-nav">
             <button 
               onClick={() => { setActiveTab('overview'); setSearchQuery(''); }}
               style={{
@@ -657,15 +662,8 @@ const Admin = () => {
               {filteredErrors.length > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {filteredErrors.map((err) => (
-                    <div key={err.id} style={{
-                      padding: '1rem 1.25rem',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: 'var(--radius-lg)',
+                    <div key={err.id} className="admin-error-card" style={{
                       backgroundColor: err.status === 'Hal qilindi' ? '#FBFDFB' : '#FFFDFD',
-                      display: 'grid',
-                      gridTemplateColumns: '1fr auto',
-                      alignItems: 'center',
-                      gap: '1rem',
                       transition: 'all 0.2s',
                       borderColor: err.status === 'Hal qilindi' ? '#C3F3DB' : err.level === 'Kritik' ? '#FFD2D9' : '#FFF9EC'
                     }}>
