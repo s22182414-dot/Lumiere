@@ -849,184 +849,56 @@ const Seller = () => {
   }
 
   return (
-    <div className="container" style={{ padding: '2rem 1rem', minHeight: 'calc(100vh - 100px)' }}>
-      {/* Top Breadcrumb & Return button */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--color-primary)', fontWeight: '600' }} className="back-link">
-          <ArrowLeft size={18} />
+    <div className="dash-page">
+
+      {/* TOP BAR */}
+      <div className="dash-topbar">
+        <Link to="/" className="dash-back-link">
+          <ArrowLeft size={16} />
           Do'konga qaytish
         </Link>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#00B048' }}></span>
-          <span style={{ fontSize: '0.9rem', fontWeight: '500' }}>Sotuvchi kabineti: <strong>Lumiere Cosmetics</strong></span>
+        <div className="dash-badge">
+          <span className="dash-status-dot"></span>
+          Sotuvchi kabineti
         </div>
       </div>
 
-      <div className="seller-admin-grid">
+      <div className="dash-layout">
         
-        {/* SIDEBAR */}
-        <aside style={{
-          backgroundColor: 'var(--color-surface)',
-          borderRadius: 'var(--radius-lg)',
-          border: '1px solid var(--color-border)',
-          padding: '1.5rem 1rem',
-          height: 'fit-content',
-          boxShadow: 'var(--shadow-sm)'
-        }}>
-          {/* Seller profile brief */}
-          <div style={{ textAlign: 'center', paddingBottom: '1.5rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-border)' }}>
-            <div style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(255, 51, 102, 0.1)',
-              color: 'var(--color-primary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1.5rem',
-              fontWeight: '700',
-              margin: '0 auto 0.75rem auto'
-            }}>
-              LC
+        {/* PROFILE + NAV CARD */}
+        <div className="dash-profile-card">
+          <div className="dash-profile-info">
+            <div className="dash-avatar dash-avatar-seller">LC</div>
+            <div className="dash-profile-text">
+              <h3>Lumiere Store</h3>
+              <span>ID: 104928</span>
             </div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: '700', margin: 0 }}>Lumiere Store</h3>
-            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>ID: 104928</span>
           </div>
-
-          {/* Navigation Links */}
-          <div className="seller-admin-sidebar-nav">
-            <button 
-              onClick={() => setActiveTab('dashboard')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '0.75rem 1rem',
-                borderRadius: 'var(--radius-md)',
-                color: activeTab === 'dashboard' ? 'white' : 'var(--color-text)',
-                backgroundColor: activeTab === 'dashboard' ? 'var(--color-primary)' : 'transparent',
-                fontWeight: '600',
-                transition: 'all 0.2s',
-                textAlign: 'left'
-              }}
-            >
-              <LayoutDashboard size={20} />
-              Boshqaruv paneli
+          <div className="dash-tabs">
+            <button className={`dash-tab-btn${activeTab === 'dashboard' ? ' active' : ''}`} onClick={() => setActiveTab('dashboard')}>
+              <LayoutDashboard size={15} /> Boshqaruv
             </button>
-
-            <button 
-              onClick={() => setActiveTab('products')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '0.75rem 1rem',
-                borderRadius: 'var(--radius-md)',
-                color: activeTab === 'products' ? 'white' : 'var(--color-text)',
-                backgroundColor: activeTab === 'products' ? 'var(--color-primary)' : 'transparent',
-                fontWeight: '600',
-                transition: 'all 0.2s',
-                textAlign: 'left'
-              }}
-            >
-              <Package size={20} />
-              Mahsulotlarim ({products.length})
+            <button className={`dash-tab-btn${activeTab === 'products' ? ' active' : ''}`} onClick={() => setActiveTab('products')}>
+              <Package size={15} /> Mahsulotlar ({products.length})
             </button>
-
-            <button 
-              onClick={() => setActiveTab('orders')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '0.75rem 1rem',
-                borderRadius: 'var(--radius-md)',
-                color: activeTab === 'orders' ? 'white' : 'var(--color-text)',
-                backgroundColor: activeTab === 'orders' ? 'var(--color-primary)' : 'transparent',
-                fontWeight: '600',
-                transition: 'all 0.2s',
-                textAlign: 'left'
-              }}
-            >
-              <ShoppingBag size={20} />
-              Buyurtmalar ({dbOrders.length})
+            <button className={`dash-tab-btn${activeTab === 'orders' ? ' active' : ''}`} onClick={() => setActiveTab('orders')}>
+              <ShoppingBag size={15} /> Buyurtmalar ({dbOrders.length})
             </button>
-
-            <button 
-              onClick={() => setActiveTab('banners')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '0.75rem 1rem',
-                borderRadius: 'var(--radius-md)',
-                color: activeTab === 'banners' ? 'white' : 'var(--color-text)',
-                backgroundColor: activeTab === 'banners' ? 'var(--color-primary)' : 'transparent',
-                fontWeight: '600',
-                transition: 'all 0.2s',
-                textAlign: 'left'
-              }}
-            >
-              <Image size={20} />
-              Karusel ({banners.length})
+            <button className={`dash-tab-btn${activeTab === 'banners' ? ' active' : ''}`} onClick={() => setActiveTab('banners')}>
+              <Image size={15} /> Karusel ({banners.length})
             </button>
-
-            <button 
-              onClick={() => {
-                setPwError('');
-                setCurrentPw('');
-                setNewPw('');
-                setConfirmNewPw('');
-                setShowPasswordModal(true);
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '0.75rem 1rem',
-                borderRadius: 'var(--radius-md)',
-                color: 'var(--color-text)',
-                backgroundColor: 'transparent',
-                border: '1px dashed var(--color-border)',
-                fontWeight: '600',
-                transition: 'all 0.2s',
-                textAlign: 'left',
-                marginTop: '1.5rem',
-                cursor: 'pointer'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 51, 102, 0.05)';
-                e.currentTarget.style.borderColor = 'var(--color-primary)';
-                e.currentTarget.style.color = 'var(--color-primary)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.borderColor = 'var(--color-border)';
-                e.currentTarget.style.color = 'var(--color-text)';
-              }}
+            <button
+              className="dash-tab-btn dash-pw-tab"
+              onClick={() => { setPwError(''); setCurrentPw(''); setNewPw(''); setConfirmNewPw(''); setShowPasswordModal(true); }}
             >
-              <Key size={20} />
-              Parolni o'zgartirish
+              <Key size={15} /> Parol
             </button>
           </div>
-        </aside>
-
+        </div>
 
         {/* MAIN PANEL CONTENT */}
-        <main style={{
-          backgroundColor: 'var(--color-surface)',
-          borderRadius: 'var(--radius-lg)',
-          border: '1px solid var(--color-border)',
-          padding: '2rem',
-          boxShadow: 'var(--shadow-sm)',
-          minHeight: '500px'
-        }}>
+        <main className="dash-main-card">
+
           
           {/* TAB 4: BANNER/CAROUSEL MANAGEMENT */}
           {activeTab === 'banners' && (
@@ -1168,7 +1040,7 @@ const Seller = () => {
               <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '1.5rem' }}>Boshqaruv paneli</h2>
               
               {/* Stat Cards Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
+              <div className="dash-stats-grid">
                 {/* Stat 1 */}
                 <div style={{ padding: '1.25rem', backgroundColor: 'var(--color-bg)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
@@ -1384,9 +1256,11 @@ const Seller = () => {
                             </ul>
                           </div>
 
-                          <p style={{ margin: '8px 0 0 0', fontSize: '0.85rem', color: 'var(--color-text-muted)', lineHeight: '1.5' }}>
-                            <strong>Xaridor:</strong> {customerName} • <strong>Tel:</strong> {customerPhone}<br />
-                            <strong>Manzil:</strong> {deliveryAddress} • <strong>To'lov:</strong> {paymentInfo}
+                          <p style={{ margin: '8px 0 0 0', fontSize: '0.85rem', color: 'var(--color-text-muted)', lineHeight: '1.6' }}>
+                            <strong>Xaridor:</strong> {customerName}<br />
+                            <strong>Tel:</strong> {customerPhone}<br />
+                            <strong>Manzil:</strong> {deliveryAddress}<br />
+                            <strong>To'lov:</strong> {paymentInfo}
                           </p>
                           
                           <span style={{ display: 'inline-block', marginTop: '10px', fontWeight: '800', fontSize: '1rem', color: 'var(--color-primary)' }}>

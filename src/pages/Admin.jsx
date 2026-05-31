@@ -361,153 +361,64 @@ const Admin = () => {
   }
 
   return (
-    <div className="container" style={{ padding: '2rem 1rem', minHeight: 'calc(100vh - 100px)' }}>
-      {/* Top Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--color-primary)', fontWeight: '600' }} className="back-link">
-          <ArrowLeft size={18} />
+    <div className="dash-page">
+
+      {/* TOP BAR */}
+      <div className="dash-topbar">
+        <Link to="/" className="dash-back-link">
+          <ArrowLeft size={16} />
           Bosh sahifaga qaytish
         </Link>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: 'rgba(255, 51, 102, 0.1)', color: 'var(--color-primary)', borderRadius: '20px', fontSize: '0.85rem', fontWeight: '700' }}>
-          <Shield size={16} />
+        <div className="dash-badge">
+          <Shield size={14} />
           TIZIM ADMINI
         </div>
       </div>
 
-      <div className="seller-admin-grid">
-        
-        {/* SIDEBAR */}
-        <aside style={{
-          backgroundColor: 'var(--color-surface)',
-          borderRadius: 'var(--radius-lg)',
-          border: '1px solid var(--color-border)',
-          padding: '1.5rem 1rem',
-          height: 'fit-content',
-          boxShadow: 'var(--shadow-sm)'
-        }}>
-          {/* Admin profile */}
-          <div style={{ textAlign: 'center', paddingBottom: '1.5rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-border)' }}>
-            <div style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(26, 26, 26, 0.05)',
-              color: 'var(--color-text)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1.5rem',
-              fontWeight: '700',
-              margin: '0 auto 0.75rem auto',
-              border: '2px dashed var(--color-primary)'
-            }}>
-              AD
+      <div className="dash-layout">
+
+        {/* PROFILE + NAV CARD */}
+        <div className="dash-profile-card">
+          <div className="dash-profile-info">
+            <div className="dash-avatar dash-avatar-admin">AD</div>
+            <div className="dash-profile-text">
+              <h3>Super Admin</h3>
+              <span>Boshqaruv &amp; Monitor</span>
             </div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: '700', margin: 0 }}>Super Admin</h3>
-            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Boshqaruv & Crash Monitor</span>
           </div>
-
-          {/* Sidebar Nav Items */}
-          <div className="seller-admin-sidebar-nav">
-            <button 
+          <div className="dash-tabs">
+            <button
+              className={`dash-tab-btn${activeTab === 'overview' ? ' active' : ''}`}
               onClick={() => { setActiveTab('overview'); setSearchQuery(''); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '0.75rem 1rem',
-                borderRadius: 'var(--radius-md)',
-                color: activeTab === 'overview' ? 'white' : 'var(--color-text)',
-                backgroundColor: activeTab === 'overview' ? 'var(--color-primary)' : 'transparent',
-                fontWeight: '600',
-                transition: 'all 0.2s',
-                textAlign: 'left'
-              }}
             >
-              <Activity size={20} />
-              Tizim tahlili
+              <Activity size={15} /> Tizim tahlili
             </button>
-
-            <button 
+            <button
+              className={`dash-tab-btn${activeTab === 'errors' ? ' active' : ''}`}
               onClick={() => { setActiveTab('errors'); setSearchQuery(''); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '0.75rem 1rem',
-                borderRadius: 'var(--radius-md)',
-                color: activeTab === 'errors' ? 'white' : 'var(--color-text)',
-                backgroundColor: activeTab === 'errors' ? 'var(--color-primary)' : 'transparent',
-                fontWeight: '600',
-                transition: 'all 0.2s',
-                textAlign: 'left'
-              }}
             >
-              <Terminal size={20} />
-              Xatoliklar jurnali ({errors.filter(e => e.status === 'Hal qilinmagan').length})
+              <Terminal size={15} /> Xatoliklar ({errors.filter(e => e.status === 'Hal qilinmagan').length})
             </button>
-
-            <button 
-              onClick={() => {
-                setPwError('');
-                setCurrentPw('');
-                setNewPw('');
-                setConfirmNewPw('');
-                setShowPasswordModal(true);
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '0.75rem 1rem',
-                borderRadius: 'var(--radius-md)',
-                color: 'var(--color-text)',
-                backgroundColor: 'transparent',
-                border: '1px dashed var(--color-border)',
-                fontWeight: '600',
-                transition: 'all 0.2s',
-                textAlign: 'left',
-                marginTop: '1.5rem',
-                cursor: 'pointer'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 51, 102, 0.05)';
-                e.currentTarget.style.borderColor = 'var(--color-primary)';
-                e.currentTarget.style.color = 'var(--color-primary)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.borderColor = 'var(--color-border)';
-                e.currentTarget.style.color = 'var(--color-text)';
-              }}
+            <button
+              className="dash-tab-btn dash-pw-tab"
+              onClick={() => { setPwError(''); setCurrentPw(''); setNewPw(''); setConfirmNewPw(''); setShowPasswordModal(true); }}
             >
-              <Key size={20} />
-              Parolni o'zgartirish
+              <Key size={15} /> Parol
             </button>
-
           </div>
-        </aside>
+        </div>
 
         {/* MAIN PANEL CONTENT */}
-        <main style={{
-          backgroundColor: 'var(--color-surface)',
-          borderRadius: 'var(--radius-lg)',
-          border: '1px solid var(--color-border)',
-          padding: '2rem',
-          boxShadow: 'var(--shadow-sm)',
-          minHeight: '520px'
-        }}>
-          
+        <main className="dash-main-card">
+
+
           {/* TAB 1: SYSTEM OVERVIEW */}
           {activeTab === 'overview' && (
             <div>
               <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '1.5rem' }}>Tizim Tahlili va Monitoringi</h2>
               
               {/* Stat Cards Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
+              <div className="dash-stats-grid">
                 {/* Stat 1 */}
                 <div style={{ padding: '1.25rem', backgroundColor: 'var(--color-bg)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
@@ -540,15 +451,9 @@ const Admin = () => {
               </div>
 
               {/* Maintenance Mode Widget */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '1.5rem',
+              <div className="admin-maintenance-widget" style={{
                 backgroundColor: maintenanceMode ? '#FFF2F2' : '#F6FBF8',
-                border: maintenanceMode ? '1px solid #FFD2D9' : '1px solid #C3F3DB',
-                borderRadius: 'var(--radius-lg)',
-                marginBottom: '2rem'
+                border: maintenanceMode ? '1px solid #FFD2D9' : '1px solid #C3F3DB'
               }}>
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                   <AlertCircle size={24} color={maintenanceMode ? '#D61C4E' : '#00B048'} />
