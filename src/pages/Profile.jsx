@@ -471,10 +471,31 @@ const Profile = () => {
           display: flex;
           gap: 1.25rem;
           align-items: center;
+          position: relative;
         }
         .item-card:hover {
           box-shadow: var(--shadow-md);
           border-color: #ddd;
+        }
+        
+        .review-delete-btn {
+          position: absolute;
+          bottom: 1rem;
+          right: 1rem;
+          background: none;
+          border: none;
+          color: #e53e3e;
+          cursor: pointer;
+          padding: 8px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
+          z-index: 5;
+        }
+        .review-delete-btn:hover {
+          background: #fff5f5 !important;
         }
         
         /* Toast style */
@@ -1065,12 +1086,7 @@ const Profile = () => {
                         {/* Delete button on the far right */}
                         <button
                           onClick={() => handleDeleteReview(rev._id || rev.id)}
-                          style={{
-                            background: 'none', border: 'none', color: '#e53e3e',
-                            cursor: 'pointer', padding: '4px', borderRadius: '4px', flexShrink: 0
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.background = '#fff5f5'}
-                          onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                          className="review-delete-btn"
                           title="Sharhni o'chirish"
                         >
                           <Trash2 size={16} />
