@@ -453,7 +453,7 @@ const Checkout = () => {
   };
 
   return (
-    <div className="checkout-page-wrapper" style={{ backgroundColor: '#fcfcfc', minHeight: '100vh', padding: '2rem 1rem' }}>
+    <div className="checkout-page-wrapper" style={{ backgroundColor: '#fcfcfc', minHeight: '100vh', padding: '1rem', overflowX: 'hidden', boxSizing: 'border-box' }}>
       <style>{`
         .checkout-page-wrapper {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -464,13 +464,17 @@ const Checkout = () => {
         .checkout-container {
           max-width: 1100px;
           margin: 0 auto;
+          width: 100%;
+          box-sizing: border-box;
         }
 
         .checkout-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 2rem;
+          margin-bottom: 1.25rem;
+          gap: 0.5rem;
+          flex-wrap: wrap;
         }
 
         .btn-back-to-cart {
@@ -481,10 +485,19 @@ const Checkout = () => {
           font-weight: 600;
           text-decoration: none;
           transition: all 0.2s;
+          white-space: nowrap;
         }
 
         .btn-back-to-cart:hover {
           transform: translateX(-2px);
+        }
+
+        .checkout-breadcrumb {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.88rem;
+          color: #8b96a5;
         }
 
         .checkout-layout {
@@ -697,7 +710,10 @@ const Checkout = () => {
           flex-shrink: 0;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
+          .checkout-page-wrapper {
+            padding: 0.75rem !important;
+          }
           .checkout-layout {
             grid-template-columns: 1fr;
           }
@@ -705,11 +721,32 @@ const Checkout = () => {
             grid-template-columns: 1fr;
           }
           .checkout-section-card {
-            padding: 1.25rem;
+            padding: 1rem;
+          }
+          .checkout-header {
+            margin-bottom: 1rem;
+          }
+          .checkout-breadcrumb {
+            display: none;
+          }
+          .section-title-new {
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+          }
+        }
+
+        @media (min-width: 901px) {
+          .checkout-page-wrapper {
+            padding: 2rem 1rem !important;
+          }
+          .checkout-right-col .checkout-section-card {
+            position: sticky;
+            top: 100px;
           }
         }
 
         /* ─── Real Card Payment Gateway Modal & Card Mockup ─── */
+
         .payment-modal-backdrop {
           position: fixed;
           inset: 0;
@@ -917,7 +954,7 @@ const Checkout = () => {
             <ArrowLeft size={18} />
             Savatga qaytish
           </Link>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.88rem', color: '#8b96a5' }}>
+          <div className="checkout-breadcrumb">
             <span style={{ fontWeight: '600', color: '#1f1f1f' }}>Savat</span>
             <ChevronRight size={14} />
             <span style={{ fontWeight: '700', color: '#FF3366' }}>Rasmiylashtirish</span>
@@ -1052,7 +1089,7 @@ const Checkout = () => {
 
           {/* Right Column: Order Summary Card */}
           <div className="checkout-right-col">
-            <div className="checkout-section-card" style={{ position: 'sticky', top: '100px' }}>
+            <div className="checkout-section-card">
               <h3 style={{ fontSize: '1.2rem', fontWeight: '800', marginBottom: '1.25rem', borderBottom: '1px solid #eef0f2', paddingBottom: '0.75rem' }}>
                 Xarid yakuni
               </h3>
