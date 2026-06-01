@@ -853,7 +853,8 @@ img {
 
 /* Product Details Page */
 .product-details-page {
-  padding: 2rem 0;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 .breadcrumbs {
   display: flex;
