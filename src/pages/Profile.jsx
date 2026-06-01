@@ -280,7 +280,7 @@ const Profile = () => {
   const avatarGradient = gradients[(parseInt(userData.telegramId || '0') % gradients.length)] || gradients[0];
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-bg)', paddingBottom: '5rem' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-bg)', paddingBottom: '5rem', overflowX: 'hidden', boxSizing: 'border-box' }}>
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(12px); }
@@ -468,6 +468,9 @@ const Profile = () => {
           padding: 1rem;
           background: white;
           transition: all 0.2s ease;
+          display: flex;
+          gap: 1.25rem;
+          align-items: center;
         }
         .item-card:hover {
           box-shadow: var(--shadow-md);
@@ -491,6 +494,77 @@ const Profile = () => {
           animation: fadeIn 0.3s ease forwards;
         }
 
+        /* ── Leave Review Form Modern responsive styles ── */
+        .review-form-card {
+          background: white;
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-lg);
+          padding: 1.5rem;
+          margin-bottom: 2rem;
+          animation: fadeIn 0.3s ease;
+        }
+        .review-form-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 1.25rem;
+          gap: 1rem;
+        }
+        .review-form-product-info {
+          display: flex;
+          gap: 1rem;
+          align-items: center;
+          min-width: 0;
+          flex: 1;
+        }
+        .review-form-product-title {
+          font-weight: 700;
+          font-size: 0.92rem;
+          color: var(--color-text);
+          max-width: 400px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .review-form-cancel-btn {
+          background: none;
+          border: none;
+          color: var(--color-text-muted);
+          font-size: 0.85rem;
+          font-weight: 700;
+          cursor: pointer;
+          flex-shrink: 0;
+          padding: 4px 8px;
+        }
+        .review-form-stars-row {
+          display: flex;
+          gap: 6px;
+          flex-wrap: wrap;
+        }
+        .review-form-rating-label {
+          align-self: center;
+          font-size: 0.9rem;
+          font-weight: 700;
+          color: #FBBF24;
+          margin-left: 6px;
+        }
+        .review-form-submit-btn {
+          padding: 0.75rem 2rem;
+          background: var(--color-primary);
+          color: white;
+          border: none;
+          border-radius: 24px;
+          font-weight: 700;
+          font-size: 0.9rem;
+          cursor: pointer;
+          box-shadow: 0 4px 12px rgba(255, 51, 102, 0.25);
+          transition: all 0.2s;
+        }
+        .review-form-submit-btn:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 6px 16px rgba(255, 51, 102, 0.35);
+        }
+
         @media (max-width: 768px) {
           .profile-layout {
             flex-direction: column;
@@ -502,6 +576,66 @@ const Profile = () => {
           }
           .profile-main-content {
             padding: 1.5rem 1.25rem;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .review-form-card {
+            padding: 1rem;
+          }
+          .review-form-header {
+            flex-direction: column-reverse;
+            align-items: stretch;
+            gap: 0.75rem;
+          }
+          .review-form-cancel-btn {
+            align-self: flex-end;
+            padding: 0;
+          }
+          .review-form-product-title {
+            max-width: 100%;
+            white-space: normal;
+          }
+          .review-form-stars-row {
+            gap: 4px;
+          }
+          .review-form-stars-row .star-btn svg {
+            width: 28px !important;
+            height: 28px !important;
+          }
+          .review-form-rating-label {
+            width: 100%;
+            margin-left: 0;
+            margin-top: 4px;
+          }
+          .review-form-submit-btn {
+            width: 100%;
+            text-align: center;
+          }
+          
+          /* item-card layout for reviews lists */
+          .item-card {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 1rem !important;
+          }
+          .product-link-item {
+            gap: 0.75rem !important;
+            align-items: center !important;
+          }
+          .product-link-item img {
+            width: 50px !important;
+            height: 50px !important;
+          }
+          .product-title-hover {
+            white-space: normal !important;
+            font-size: 0.88rem !important;
+          }
+          .item-card button {
+            width: 100%;
+            padding: 8px 16px !important;
+            text-align: center;
+            font-size: 0.85rem !important;
           }
         }
       `}</style>
@@ -644,7 +778,7 @@ const Profile = () => {
               {cartItems.length > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   {cartItems.map((item, idx) => (
-                    <div key={idx} className="item-card" style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
+                    <div key={idx} className="item-card">
                       <Link to={`/product/${item.id}`} className="product-link-item">
                         <img src={item.image} alt={item.name} style={{
                           width: '70px', height: '70px', objectFit: 'cover',
@@ -745,24 +879,20 @@ const Profile = () => {
 
               {/* ── Leave Review Form overlay/container ── */}
               {selectedProductForReview ? (
-                <div style={{
-                  background: 'white', border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-lg)', padding: '1.5rem', marginBottom: '2rem',
-                  animation: 'fadeIn 0.3s ease'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div className="review-form-card">
+                  <div className="review-form-header">
+                    <div className="review-form-product-info">
                       <img src={selectedProductForReview.image} alt={selectedProductForReview.name} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '6px', border: '1px solid var(--color-border)' }} />
-                      <div>
+                      <div style={{ minWidth: 0, flex: 1 }}>
                         <div style={{ fontSize: '0.78rem', color: 'var(--color-primary)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Mahsulotga sharh qoldirish</div>
-                        <div style={{ fontWeight: '700', fontSize: '0.92rem', color: 'var(--color-text)', maxWidth: '400px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <div className="review-form-product-title">
                           {selectedProductForReview.name}
                         </div>
                       </div>
                     </div>
                     <button
                       onClick={() => { setSelectedProductForReview(null); setComment(''); }}
-                      style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', fontSize: '0.85rem', fontWeight: '700', cursor: 'pointer' }}
+                      className="review-form-cancel-btn"
                     >
                       Bekor qilish
                     </button>
@@ -772,7 +902,7 @@ const Profile = () => {
                     {/* Star Rating Select */}
                     <div style={{ marginBottom: '1.25rem' }}>
                       <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: 'var(--color-text)', marginBottom: '6px' }}>Mahsulotni baholang:</label>
-                      <div style={{ display: 'flex', gap: '6px' }}>
+                      <div className="review-form-stars-row">
                         {[1, 2, 3, 4, 5].map((star) => {
                           const isFilled = hoverRating ? star <= hoverRating : star <= rating;
                           return (
@@ -793,7 +923,7 @@ const Profile = () => {
                             </button>
                           );
                         })}
-                        <span style={{ alignSelf: 'center', fontSize: '0.9rem', fontWeight: '700', color: '#FBBF24', marginLeft: '6px' }}>
+                        <span className="review-form-rating-label">
                           {rating === 5 ? 'Ajoyib!' : rating === 4 ? 'Yaxshi' : rating === 3 ? 'Qoniqarli' : rating === 2 ? 'Yomon emas' : 'Juda yomon'}
                         </span>
                       </div>
@@ -816,16 +946,7 @@ const Profile = () => {
 
                     <button
                       type="submit"
-                      style={{
-                        padding: '0.75rem 2rem',
-                        background: 'var(--color-primary)', color: 'white',
-                        border: 'none', borderRadius: '24px',
-                        fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer',
-                        boxShadow: '0 4px 12px rgba(255, 51, 102, 0.25)',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => { e.target.style.transform = 'translateY(-1px)'; e.target.style.boxShadow = '0 6px 16px rgba(255, 51, 102, 0.35)'; }}
-                      onMouseLeave={(e) => { e.target.style.transform = 'none'; e.target.style.boxShadow = '0 4px 12px rgba(255, 51, 102, 0.25)'; }}
+                      className="review-form-submit-btn"
                     >
                       Sharhni yuborish
                     </button>
@@ -855,7 +976,7 @@ const Profile = () => {
                     return reviewableProducts.length > 0 ? (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         {reviewableProducts.map((prod, idx) => (
-                          <div key={idx} className="item-card" style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
+                          <div key={idx} className="item-card">
                             <Link to={`/product/${prod.id || prod.productId}`} className="product-link-item">
                               <img src={prod.image} alt={prod.name} style={{
                                 width: '60px', height: '60px', objectFit: 'cover',
@@ -904,7 +1025,7 @@ const Profile = () => {
                 {reviews.length > 0 ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     {reviews.map((rev) => (
-                      <div key={rev._id || rev.id} className="item-card" style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
+                      <div key={rev._id || rev.id} className="item-card" style={{ alignItems: 'flex-start' }}>
                         <Link to={`/product/${rev.productId}`} className="product-link-item" style={{ alignItems: 'flex-start' }}>
                           <img src={rev.productImage} alt={rev.productName} style={{
                             width: '60px', height: '60px', objectFit: 'cover',
