@@ -1927,9 +1927,9 @@ img {
   height: 44px;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   color: var(--color-text);
-  opacity: 0.9;
+  opacity: 0.95;
   transition: all 0.2s ease;
 }
 
@@ -1938,15 +1938,21 @@ img {
   color: white;
   border-color: var(--color-primary);
   opacity: 1;
-  box-shadow: 0 4px 12px rgba(255, 51, 102, 0.2);
+  box-shadow: 0 4px 12px rgba(255, 51, 102, 0.3);
 }
 
 .similar-arrow.left-arrow {
-  left: -22px;
+  left: 10px;
 }
 
 .similar-arrow.right-arrow {
-  right: -22px;
+  right: 10px;
+}
+
+@media (max-width: 900px) {
+  .similar-arrow {
+    display: none !important;
+  }
 }
 
 /* Premium Login Page Styles */
