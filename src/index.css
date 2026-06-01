@@ -1951,7 +1951,20 @@ img {
 
 @media (max-width: 900px) {
   .similar-arrow {
-    display: none !important;
+    width: 34px !important;
+    height: 34px !important;
+    opacity: 0.9 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  }
+  .similar-arrow.left-arrow {
+    left: 4px !important;
+  }
+  .similar-arrow.right-arrow {
+    right: 4px !important;
+  }
+  .similar-arrow svg {
+    width: 18px !important;
+    height: 18px !important;
   }
 }
 
