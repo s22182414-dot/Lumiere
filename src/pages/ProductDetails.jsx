@@ -10,62 +10,45 @@ import LoginModal from '../components/LoginModal';
 const ProductDetails = () => {
   const { id } = useParams(); // 'id' will now contain the whole slug string
   const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
+  
+  // Group all state hooks at the very top
   const [isAdded, setIsAdded] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [dbReviews, setDbReviews] = useState([]);
+  const [ordersCount, setOrdersCount] = useState(0);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [newComment, setNewComment] = useState('');
+  const [newRating, setNewRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('user_logged_in') === 'true');
 
   const similarCarouselRef = useRef(null);
-
-  const scrollSimilar = (direction) => {
-    if (similarCarouselRef.current) {
-      const scrollAmount = 240 * 3; // Scroll 3 cards at a time
-      similarCarouselRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    }
-  };
 
   const savedProducts = (() => {
     const saved = localStorage.getItem('seller_products');
     return saved ? JSON.parse(saved) : products;
   })();
 
-  const carouselProducts = [];
-  for (let i = 0; i < 15; i++) {
-    const originalProduct = savedProducts[i % savedProducts.length];
-    carouselProducts.push({
-      ...originalProduct,
-      id: originalProduct.id + (i + 1) * 100
-    });
-  }
-
-  const formatPrice = (price) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
-  };
-
   const numericId = parseProductId(id);
   let product = savedProducts.find(p => p.id === numericId);
   if (!product) {
-    const baseId = ((numericId - 1) % savedProducts.length) + 1;
+    const baseId = savedProducts.length > 0 ? ((numericId - 1) % savedProducts.length) + 1 : 1;
     product = savedProducts.find(p => p.id === baseId);
   }
 
-  if (!product) {
-    return (
-      <div className="container" style={{ padding: '4rem 0', textAlign: 'center' }}>
-        <h2>Mahsulot topilmadi</h2>
-        <Link to="/" style={{ color: 'var(--color-primary)', marginTop: '1rem', display: 'inline-block' }}>Bosh sahifaga qaytish</Link>
-      </div>
-    );
-  }
-
-  const cartItem = cart.find(item => item.id === product.id);
-  const quantityInCart = cartItem ? cartItem.quantity : 0;
-
-  const [dbReviews, setDbReviews] = useState([]);
-  const [ordersCount, setOrdersCount] = useState(0);
+  // Group all side-effects hooks
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsLoggedIn(localStorage.getItem('user_logged_in') === 'true');
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   useEffect(() => {
+    if (!product) return;
+
     const fetchProductReviews = async () => {
       const loadOfflineFallback = () => {
         try {
@@ -110,7 +93,44 @@ const ProductDetails = () => {
     fetchOrdersCount();
     setActiveImageIndex(0); // Reset image index on product change
     window.scrollTo(0, 0); // Scroll to top on product change
-  }, [product.id]);
+  }, [product?.id]);
+
+  // Conditional early return block placed AFTER all hooks
+  if (!product) {
+    return (
+      <div className="container" style={{ padding: '4rem 0', textAlign: 'center' }}>
+        <h2>Mahsulot topilmadi</h2>
+        <Link to="/" style={{ color: 'var(--color-primary)', marginTop: '1rem', display: 'inline-block' }}>Bosh sahifaga qaytish</Link>
+      </div>
+    );
+  }
+
+  // Render-time logic and callbacks (guaranteed to have `product` defined here)
+  const cartItem = cart.find(item => item.id === product.id);
+  const quantityInCart = cartItem ? cartItem.quantity : 0;
+
+  const scrollSimilar = (direction) => {
+    if (similarCarouselRef.current) {
+      const scrollAmount = 240 * 3; // Scroll 3 cards at a time
+      similarCarouselRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const carouselProducts = [];
+  for (let i = 0; i < 15; i++) {
+    const originalProduct = savedProducts[i % savedProducts.length];
+    carouselProducts.push({
+      ...originalProduct,
+      id: originalProduct.id + (i + 1) * 100
+    });
+  }
+
+  const formatPrice = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
+  };
 
   // Real-time dynamic rating & review calculations strictly based on DB!
   const totalReviewsCount = dbReviews.length;
@@ -142,21 +162,6 @@ const ProductDetails = () => {
   };
 
   const { average: averageRating, percents: starPercents } = getDynamicRatings();
-
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [newComment, setNewComment] = useState('');
-  const [newRating, setNewRating] = useState(5);
-  const [hoverRating, setHoverRating] = useState(0);
-  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('user_logged_in') === 'true');
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setIsLoggedIn(localStorage.getItem('user_logged_in') === 'true');
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
 
   const handleAddReview = async (e) => {
     e.preventDefault();
