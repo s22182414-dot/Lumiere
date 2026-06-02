@@ -360,25 +360,49 @@ app.post('/api/orders', async (req, res) => {
         let sentViaUserbot = false;
         if (userbotClient) {
           try {
-            // Mijozning Telegram entity-sini tekshirib olish (peer aniqlash uchun)
-            try {
-              await userbotClient.getEntity(telegramId);
-            } catch (e) {
-              console.log("GramJS getEntity error, sending anyway:", e.message);
+            let peer = null;
+            
+            // 1. Try finding via telegramId (convert string to BigInt for GramJS)
+            if (telegramId && !isNaN(telegramId)) {
+              try {
+                peer = await userbotClient.getEntity(BigInt(telegramId));
+                console.log(`🔍 Userbot telegramId orqali entity topdi: ${telegramId}`);
+              } catch (idErr) {
+                console.log(`⚠️ Userbot telegramId bo'yicha entity topa olmadi: ${idErr.message}`);
+              }
             }
             
-            const mijozIsmi = `${customerDetails.firstName || ''} ${customerDetails.lastName || ''}`.trim() || 'Mijoz';
-            const mahsulotlar = items.map(item => item.name).join(', ');
-            const formattedPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
-            
-            await userbotClient.sendMessage(telegramId, { message: `Assalomu alaykum, ${mijozIsmi}` });
-            await userbotClient.sendMessage(telegramId, { message: `Siz #${orderNumber} ni buyurtirgan ekansiz.` });
-            await userbotClient.sendMessage(telegramId, { message: `Iltimos, buyurtmangiz uchun ${formattedPrice}ni quyidagi kartaga o'tkazing:\n\n💳 Karta: 8600 4929 1122 3344\n👤 Karta egasi: Sunnatillo B.\n\nTo'lovdan so'ng, iltimos, chekni ham tashlab yuboring.` });
-            
-            console.log(`✉️ Userbot orqali yuborildi! user=${telegramId}`);
-            sentViaUserbot = true;
+            // 2. Try finding via phone number if telegramId search failed
+            if (!peer && customerDetails && customerDetails.phone) {
+              let cleanPhone = customerDetails.phone.trim();
+              if (!cleanPhone.startsWith('+')) {
+                cleanPhone = '+' + cleanPhone;
+              }
+              try {
+                console.log(`🔍 Userbot telefon raqami orqali qidirmoqda: ${cleanPhone}`);
+                peer = await userbotClient.getEntity(cleanPhone);
+                console.log(`✅ Userbot telefon raqami orqali entity topdi!`);
+              } catch (phoneErr) {
+                console.log(`⚠️ Userbot telefon raqami bo'yicha ham topa olmadi: ${phoneErr.message}`);
+              }
+            }
+
+            // 3. Send message if peer is found
+            if (peer) {
+              const mijozIsmi = `${customerDetails.firstName || ''} ${customerDetails.lastName || ''}`.trim() || 'Mijoz';
+              const formattedPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
+              
+              await userbotClient.sendMessage(peer, { message: `Assalomu alaykum, ${mijozIsmi}` });
+              await userbotClient.sendMessage(peer, { message: `Siz #${orderNumber} ni buyurtirgan ekansiz.` });
+              await userbotClient.sendMessage(peer, { message: `Iltimos, buyurtmangiz uchun ${formattedPrice}ni quyidagi kartaga o'tkazing:\n\n💳 Karta: 8600 4929 1122 3344\n👤 Karta egasi: Sunnatillo B.\n\nTo'lovdan so'ng, iltimos, chekni ham tashlab yuboring.` });
+              
+              console.log(`✉️ Userbot orqali muvaffaqiyatli yuborildi! user=${telegramId}`);
+              sentViaUserbot = true;
+            } else {
+              console.log(`⚠️ Userbot peer topa olmadi (telegramId: ${telegramId}, phone: ${customerDetails ? customerDetails.phone : 'yo\'q'}). Bot orqali yuboriladi.`);
+            }
           } catch (ubErr) {
-            console.error('⚠️ Userbot xato, botga o\'tilmoqda:', ubErr.message);
+            console.error('⚠️ Userbot xabar yuborishda xato:', ubErr.message);
           }
         }
 

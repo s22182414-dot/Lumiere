@@ -3014,6 +3014,12 @@ img {
     max-width: 100%;
     overflow-x: hidden;
   }
+  .navbar {
+    height: 135px !important;
+  }
+  .main-content {
+    padding-top: 155px !important;
+  }
   /* Navbar: hide labels, shrink logo */
   .action-item span,
   .action-item > span {
@@ -3021,11 +3027,19 @@ img {
   }
   .navbar-logo { font-size: 1.6rem !important; }
   .navbar-container {
-    gap: var(--spacing-md) !important;
+    flex-wrap: wrap !important;
+    gap: var(--spacing-xs) !important;
     justify-content: space-between !important;
     width: 100% !important;
+    height: 100% !important;
+    align-content: center !important;
   }
-  .search-container-relative { display: none !important; }
+  .search-container-relative {
+    display: flex !important;
+    width: 100% !important;
+    margin-top: 8px !important;
+    order: 3;
+  }
 }
 
 /* Premium Seller & Admin Responsive Dashboard layouts */
@@ -3201,12 +3215,18 @@ img {
     font-size: 1.6rem !important;
   }
   .navbar-container {
-    gap: var(--spacing-md) !important;
+    flex-wrap: wrap !important;
+    gap: var(--spacing-xs) !important;
     justify-content: space-between !important;
     width: 100% !important;
+    height: 100% !important;
+    align-content: center !important;
   }
   .search-container-relative {
-    display: none !important;
+    display: flex !important;
+    width: 100% !important;
+    margin-top: 8px !important;
+    order: 3;
   }
   .seller-admin-stats-grid {
     grid-template-columns: 1fr !important;
