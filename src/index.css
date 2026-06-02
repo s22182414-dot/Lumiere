@@ -3015,10 +3015,10 @@ img {
     overflow-x: hidden;
   }
   .navbar {
-    height: 135px !important;
+    height: 80px !important;
   }
   .main-content {
-    padding-top: 155px !important;
+    padding-top: 100px !important;
   }
   /* Navbar: hide labels, shrink logo */
   .action-item span,
@@ -3026,28 +3026,30 @@ img {
     display: none !important;
   }
   .navbar-logo {
-    font-size: 1.6rem !important;
-    order: 1 !important;
+    font-size: 1.25rem !important;
+    margin-right: 2px !important;
   }
   .navbar-actions {
-    order: 2 !important;
-    gap: var(--spacing-sm) !important;
+    gap: var(--spacing-xs) !important;
   }
   .navbar-container {
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important;
     gap: var(--spacing-xs) !important;
     justify-content: space-between !important;
     width: 100% !important;
     height: 100% !important;
-    align-content: center !important;
     display: flex !important;
+    align-items: center !important;
   }
   .search-container-relative {
     display: flex !important;
-    width: 100% !important;
-    flex: none !important;
-    margin-top: 8px !important;
-    order: 3 !important;
+    flex: 1 !important;
+    width: auto !important;
+    margin-top: 0 !important;
+  }
+  .search-input {
+    padding: 0.4rem 0.5rem !important;
+    font-size: 0.8rem !important;
   }
 }
 
@@ -3221,21 +3223,26 @@ img {
     display: none !important;
   }
   .navbar-logo {
-    font-size: 1.6rem !important;
+    font-size: 1.25rem !important;
+    margin-right: 2px !important;
+  }
+  .navbar-actions {
+    gap: var(--spacing-xs) !important;
   }
   .navbar-container {
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important;
     gap: var(--spacing-xs) !important;
     justify-content: space-between !important;
     width: 100% !important;
     height: 100% !important;
-    align-content: center !important;
+    display: flex !important;
+    align-items: center !important;
   }
   .search-container-relative {
     display: flex !important;
-    width: 100% !important;
-    margin-top: 8px !important;
-    order: 3;
+    flex: 1 !important;
+    width: auto !important;
+    margin-top: 0 !important;
   }
   .seller-admin-stats-grid {
     grid-template-columns: 1fr !important;
