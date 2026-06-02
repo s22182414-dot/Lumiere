@@ -109,6 +109,7 @@ const ProductDetails = () => {
     fetchProductReviews();
     fetchOrdersCount();
     setActiveImageIndex(0); // Reset image index on product change
+    window.scrollTo(0, 0); // Scroll to top on product change
   }, [product.id]);
 
   // Real-time dynamic rating & review calculations strictly based on DB!

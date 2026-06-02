@@ -149,6 +149,7 @@ const ProductReviews = () => {
     if (product) {
       fetchProductReviews();
       fetchOrdersCount();
+      window.scrollTo(0, 0); // Scroll to top on product change
     }
   }, [product?.id]);
 
