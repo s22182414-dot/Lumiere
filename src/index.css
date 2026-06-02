@@ -203,7 +203,7 @@ img {
 
 /* Home Banners & Carousel */
 .banner-section {
-  padding: var(--spacing-md) 0;
+  padding: var(--spacing-md) var(--spacing-md);
 }
 .carousel-container {
   width: 100%;
