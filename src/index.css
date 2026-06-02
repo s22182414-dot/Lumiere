@@ -197,6 +197,9 @@ img {
   border: 2px solid var(--color-surface);
   line-height: 1;
 }
+.action-item span.cart-badge {
+  display: flex !important;
+}
 
 /* Home Banners & Carousel */
 .banner-section {
