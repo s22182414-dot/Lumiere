@@ -128,40 +128,67 @@ const ProductCard = ({ product }) => {
           </div>
 
           {quantityInCart > 0 ? (
-            <div 
-              className="product-quantity-selector"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-            >
-              <button 
-                className="product-quantity-btn"
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+              <div 
+                className="product-quantity-selector"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  if (quantityInCart === 1) {
-                    removeFromCart(product.id);
-                  } else {
-                    updateQuantity(product.id, quantityInCart - 1);
-                  }
                 }}
               >
-                <Minus size={16} strokeWidth={2.5} />
-              </button>
+                <button 
+                  className="product-quantity-btn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (quantityInCart === 1) {
+                      removeFromCart(product.id);
+                    } else {
+                      updateQuantity(product.id, quantityInCart - 1);
+                    }
+                  }}
+                >
+                  <Minus size={16} strokeWidth={2.5} />
+                </button>
+                
+                <span style={{ userSelect: 'none' }}>{quantityInCart}</span>
+                
+                <button 
+                  className="product-quantity-btn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    updateQuantity(product.id, quantityInCart + 1);
+                  }}
+                >
+                  <Plus size={16} strokeWidth={2.5} />
+                </button>
+              </div>
               
-              <span style={{ userSelect: 'none' }}>{quantityInCart}</span>
-              
-              <button 
-                className="product-quantity-btn"
+              <Link 
+                to="/cart"
                 onClick={(e) => {
-                  e.preventDefault();
                   e.stopPropagation();
-                  updateQuantity(product.id, quantityInCart + 1);
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  padding: '6px 12px',
+                  backgroundColor: 'var(--color-primary)',
+                  color: 'white',
+                  borderRadius: 'var(--radius-md)',
+                  textDecoration: 'none',
+                  fontSize: '0.8rem',
+                  fontWeight: '700',
+                  boxShadow: '0 2px 8px rgba(255, 51, 102, 0.15)',
+                  transition: 'all 0.2s',
+                  boxSizing: 'border-box'
                 }}
               >
-                <Plus size={16} strokeWidth={2.5} />
-              </button>
+                Savatga o'tish
+              </Link>
             </div>
           ) : (
             <button 

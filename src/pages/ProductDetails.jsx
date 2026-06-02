@@ -333,28 +333,54 @@ const ProductDetails = () => {
             </div>
 
             {quantityInCart > 0 ? (
-              <div className="cart-quantity-selector-uzum">
-                <button 
-                  className="qty-btn-uzum" 
-                  onClick={() => {
-                    if (quantityInCart === 1) {
-                      removeFromCart(product.id);
-                    } else {
-                      updateQuantity(product.id, quantityInCart - 1);
-                    }
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
+                <div className="cart-quantity-selector-uzum">
+                  <button 
+                    className="qty-btn-uzum" 
+                    onClick={() => {
+                      if (quantityInCart === 1) {
+                        removeFromCart(product.id);
+                      } else {
+                        updateQuantity(product.id, quantityInCart - 1);
+                      }
+                    }}
+                  >
+                    -
+                  </button>
+                  <span className="qty-value-uzum">{quantityInCart} ta</span>
+                  <button 
+                    className="qty-btn-uzum" 
+                    onClick={() => {
+                      updateQuantity(product.id, quantityInCart + 1);
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+                
+                <Link 
+                  to="/cart"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    padding: '12px',
+                    backgroundColor: 'var(--color-primary)',
+                    color: 'white',
+                    borderRadius: 'var(--radius-lg)',
+                    textDecoration: 'none',
+                    fontSize: '1rem',
+                    fontWeight: '700',
+                    boxShadow: '0 4px 16px rgba(255, 51, 102, 0.25)',
+                    transition: 'all 0.2s',
+                    boxSizing: 'border-box'
                   }}
+                  onMouseOver={(e) => e.currentTarget.style.opacity = '0.9'}
+                  onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
                 >
-                  -
-                </button>
-                <span className="qty-value-uzum">{quantityInCart} ta</span>
-                <button 
-                  className="qty-btn-uzum" 
-                  onClick={() => {
-                    updateQuantity(product.id, quantityInCart + 1);
-                  }}
-                >
-                  +
-                </button>
+                  Savatga o'tish
+                </Link>
               </div>
             ) : (
               <button 
