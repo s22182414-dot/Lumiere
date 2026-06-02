@@ -696,15 +696,20 @@ img {
   .products-grid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
+  .carousel-arrow {
+    display: none !important;
+  }
   .banner {
     height: 220px;
   }
   .banner-text-content {
-    padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 2rem;
-    max-width: 90%;
+    padding: 1.5rem !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .banner-text-content h1 {
     font-size: 1.8rem;
+    margin-bottom: 0.5rem !important;
   }
   .banner-text-content p {
     font-size: 0.95rem;
