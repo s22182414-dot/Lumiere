@@ -712,26 +712,65 @@ const Checkout = () => {
 
         @media (max-width: 900px) {
           .checkout-page-wrapper {
-            padding: 0.75rem !important;
+            padding: 0.5rem !important;
           }
           .checkout-layout {
             grid-template-columns: 1fr;
+            gap: 1rem !important;
           }
           .form-grid-2 {
             grid-template-columns: 1fr;
+            gap: 0.75rem !important;
           }
           .checkout-section-card {
-            padding: 1rem;
+            padding: 1.25rem 1rem !important;
+            margin-bottom: 1rem !important;
+            border-radius: 10px !important;
           }
           .checkout-header {
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem !important;
           }
           .checkout-breadcrumb {
             display: none;
           }
           .section-title-new {
-            font-size: 1.05rem;
-            margin-bottom: 1rem;
+            font-size: 1.1rem !important;
+            margin-bottom: 1rem !important;
+          }
+          .input-group-new {
+            margin-bottom: 0.85rem !important;
+            gap: 4px !important;
+          }
+          .input-new, .select-new {
+            padding: 0.65rem 0.85rem !important;
+            font-size: 0.88rem !important;
+          }
+          .payment-option-card {
+            padding: 0.85rem !important;
+            gap: 10px !important;
+            align-items: flex-start !important;
+            border-radius: 8px !important;
+          }
+          .radio-dot-outer {
+            margin-top: 3px !important;
+          }
+          .payment-title {
+            font-size: 0.88rem !important;
+          }
+          .payment-subtitle {
+            font-size: 0.75rem !important;
+          }
+          .checkout-items-list {
+            max-height: 160px !important;
+            gap: 10px !important;
+            margin-bottom: 1rem !important;
+          }
+          .checkout-item-row {
+            gap: 10px !important;
+            padding-bottom: 10px !important;
+          }
+          .checkout-item-name {
+            font-size: 0.82rem !important;
           }
         }
 
