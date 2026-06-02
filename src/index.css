@@ -318,7 +318,8 @@ img {
 
 /* Products Section */
 .products-section {
-  padding: var(--spacing-md) 0 var(--spacing-xl);
+  padding-top: var(--spacing-md);
+  padding-bottom: var(--spacing-xl);
 }
 .section-title {
   font-size: 1.5rem;
