@@ -99,11 +99,7 @@ const ProductReviews = () => {
   })();
 
   const numericId = parseProductId(id);
-  let product = savedProducts.find(p => p.id === numericId);
-  if (!product) {
-    const baseId = ((numericId - 1) % savedProducts.length) + 1;
-    product = savedProducts.find(p => p.id === baseId);
-  }
+  const product = savedProducts.find(p => Number(p.id) === Number(numericId));
 
   useEffect(() => {
     const fetchProductReviews = async () => {

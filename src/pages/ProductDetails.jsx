@@ -31,11 +31,7 @@ const ProductDetails = () => {
   })();
 
   const numericId = parseProductId(id);
-  let product = savedProducts.find(p => p.id === numericId);
-  if (!product) {
-    const baseId = savedProducts.length > 0 ? ((numericId - 1) % savedProducts.length) + 1 : 1;
-    product = savedProducts.find(p => p.id === baseId);
-  }
+  const product = savedProducts.find(p => Number(p.id) === Number(numericId));
 
   // Group all side-effects hooks
   useEffect(() => {
@@ -120,12 +116,11 @@ const ProductDetails = () => {
   };
 
   const carouselProducts = [];
-  for (let i = 0; i < 15; i++) {
-    const originalProduct = savedProducts[i % savedProducts.length];
-    carouselProducts.push({
-      ...originalProduct,
-      id: originalProduct.id + (i + 1) * 100
-    });
+  if (savedProducts && savedProducts.length > 0) {
+    for (let i = 0; i < 15; i++) {
+      const originalProduct = savedProducts[i % savedProducts.length];
+      carouselProducts.push(originalProduct);
+    }
   }
 
   const formatPrice = (price) => {
@@ -533,8 +528,8 @@ const ProductDetails = () => {
           </button>
           
           <div className="similar-carousel-track" ref={similarCarouselRef}>
-            {carouselProducts.map((p) => (
-              <div key={p.id} className="similar-carousel-item">
+            {carouselProducts.map((p, idx) => (
+              <div key={`${p.id}-${idx}`} className="similar-carousel-item">
                 <ProductCard product={p} />
               </div>
             ))}
