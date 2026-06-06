@@ -1,5 +1,5 @@
 import { useCart } from '../context/CartContext';
-import { ShoppingBag, Star, Minus, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShoppingBag, Star, Minus, Plus } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { generateProductUrl } from '../utils/helpers';
@@ -228,34 +228,16 @@ const ProductCard = ({ product }) => {
             ))}
           </div>
 
-          {/* Strelkalar — faqat bir nechta rasm bo'lsa */}
+          {/* Nuqtachalar — faqat bir nechta rasm bo'lsa */}
           {images.length > 1 && (
-            <>
-              <button
-                className="card-carousel-arrow card-carousel-left"
-                onClick={goPrev}
-                aria-label="Oldingi rasm"
-              >
-                <ChevronLeft size={14} />
-              </button>
-              <button
-                className="card-carousel-arrow card-carousel-right"
-                onClick={goNext}
-                aria-label="Keyingi rasm"
-              >
-                <ChevronRight size={14} />
-              </button>
-
-              {/* Nuqtachalar */}
-              <div className="card-carousel-dots">
-                {images.map((_, idx) => (
-                  <span
-                    key={idx}
-                    className={`card-carousel-dot ${realIndex === idx ? 'active' : ''}`}
-                  />
-                ))}
-              </div>
-            </>
+            <div className="card-carousel-dots">
+              {images.map((_, idx) => (
+                <span
+                  key={idx}
+                  className={`card-carousel-dot ${realIndex === idx ? 'active' : ''}`}
+                />
+              ))}
+            </div>
           )}
         </div>
 
