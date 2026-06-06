@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cloudDb } from '../services/cloudDb';
 import { useCart } from '../context/CartContext';
 
@@ -263,10 +262,6 @@ const Home = () => {
           onMouseDown={handleMouseDown}
           style={{ cursor: 'grab', userSelect: 'none' }}
         >
-          <button className="carousel-arrow left-arrow" onClick={goPrev} aria-label="Oldingi slayd">
-            <ChevronLeft size={24} />
-          </button>
-
           {/* Track: klon + haqiqiy + klon */}
           <div
             ref={trackRef}
@@ -296,10 +291,6 @@ const Home = () => {
               </div>
             ))}
           </div>
-
-          <button className="carousel-arrow right-arrow" onClick={goNext} aria-label="Keyingi slayd">
-            <ChevronRight size={24} />
-          </button>
 
           <div className="carousel-dots">
             {banners.map((_, index) => (
