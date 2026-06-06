@@ -38,6 +38,10 @@ const Home = () => {
   const touchEndX = useRef(null);
   const isSwiping = useRef(false);
 
+  // Auto-play pause on user interaction
+  const userInteractedAt = useRef(null);
+  const PAUSE_DURATION = 7000; // foydalanuvchi to'xtatgandan keyin 7s kutadi
+
   const handleBannerClick = (banner) => {
     // Faqat swipe bo'lmagan holatda navigate qilamiz
     if (!isSwiping.current) {
@@ -90,17 +94,27 @@ const Home = () => {
     };
   }, []);
 
+  const resetInteraction = () => {
+    userInteractedAt.current = Date.now();
+  };
+
   const nextSlide = () => {
+    resetInteraction();
     setCurrentSlide((prev) => (prev + 1) % banners.length);
   };
 
   const prevSlide = () => {
+    resetInteraction();
     setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
   };
 
+  // Auto-play: foydalanuvchi oxirgi marta o'zgartirganidan PAUSE_DURATION o'tsa davom etadi
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % banners.length);
+      const sinceInteraction = Date.now() - (userInteractedAt.current || 0);
+      if (sinceInteraction >= PAUSE_DURATION) {
+        setCurrentSlide((prev) => (prev + 1) % banners.length);
+      }
     }, 5000);
     return () => clearInterval(timer);
   }, [banners.length]);
@@ -130,7 +144,6 @@ const Home = () => {
     }
     touchStartX.current = null;
     touchEndX.current = null;
-    // isSwiping ni click eventdan keyin tozalaymiz
     setTimeout(() => { isSwiping.current = false; }, 300);
   };
 
@@ -180,7 +193,7 @@ const Home = () => {
               <button
                 key={index}
                 className={`carousel-dot ${currentSlide === index ? 'active' : ''}`}
-                onClick={() => setCurrentSlide(index)}
+                onClick={() => { resetInteraction(); setCurrentSlide(index); }}
                 aria-label={`Slide ${index + 1}`}
               />
             ))}
