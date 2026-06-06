@@ -207,37 +207,50 @@ const Home = () => {
     setTimeout(() => { isSwiping.current = false; }, 300);
   };
 
-  // Mouse drag handlers (desktop)
+  // Mouse drag handlers (desktop) — document darajasida ishlaydi
   const handleMouseDown = (e) => {
+    // Strelka tugmasiga bosilganda drag boshlanmasin
+    if (e.target.closest('.carousel-arrow')) return;
+    e.preventDefault();
     touchStartX.current = e.clientX;
     touchEndX.current = null;
     isSwiping.current = false;
     isDragging.current = true;
+    document.body.style.cursor = 'grabbing';
+    document.body.style.userSelect = 'none';
   };
 
-  const handleMouseMove = (e) => {
-    if (!isDragging.current) return;
-    touchEndX.current = e.clientX;
-    if (Math.abs(touchStartX.current - touchEndX.current) > 8) {
-      isSwiping.current = true;
-    }
-  };
-
-  const handleMouseUp = () => {
-    if (!isDragging.current) return;
-    isDragging.current = false;
-    if (touchStartX.current === null || touchEndX.current === null) return;
-    const diff = touchStartX.current - touchEndX.current;
-    if (diff > 50) goNext();
-    else if (diff < -50) goPrev();
-    touchStartX.current = null;
-    touchEndX.current = null;
-    setTimeout(() => { isSwiping.current = false; }, 300);
-  };
-
-  const handleMouseLeave = () => {
-    if (isDragging.current) handleMouseUp();
-  };
+  useEffect(() => {
+    const onMouseMove = (e) => {
+      if (!isDragging.current) return;
+      touchEndX.current = e.clientX;
+      if (Math.abs(touchStartX.current - touchEndX.current) > 8) {
+        isSwiping.current = true;
+      }
+    };
+    const onMouseUp = () => {
+      if (!isDragging.current) return;
+      isDragging.current = false;
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      if (touchStartX.current === null || touchEndX.current === null) {
+        touchStartX.current = null;
+        return;
+      }
+      const diff = touchStartX.current - touchEndX.current;
+      if (diff > 50) goNext();
+      else if (diff < -50) goPrev();
+      touchStartX.current = null;
+      touchEndX.current = null;
+      setTimeout(() => { isSwiping.current = false; }, 300);
+    };
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [banners.length]);
 
   return (
     <div className="page-home">
@@ -248,10 +261,7 @@ const Home = () => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseLeave}
-          style={{ cursor: isDragging.current ? 'grabbing' : 'grab', userSelect: 'none' }}
+          style={{ cursor: 'grab', userSelect: 'none' }}
         >
           <button className="carousel-arrow left-arrow" onClick={goPrev} aria-label="Oldingi slayd">
             <ChevronLeft size={24} />
@@ -276,6 +286,7 @@ const Home = () => {
                   src={banner.image}
                   alt={banner.title}
                   className="banner-bg-img"
+                  draggable={false}
                 />
                 <div className="banner-overlay" />
                 <div className="banner-text-content">

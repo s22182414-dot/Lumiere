@@ -130,45 +130,53 @@ const ProductCard = ({ product }) => {
     setTimeout(() => { isSwiping.current = false; }, 200);
   };
 
-  // Mouse drag handlers (desktop)
+  // Mouse drag — document darajasida
   const handleMouseDown = (e) => {
+    if (images.length <= 1) return;
     e.preventDefault();
     touchStartX.current = e.clientX;
     touchEndX.current = null;
     isSwiping.current = false;
     isDragging.current = true;
     userInteractedAt.current = Date.now();
+    document.body.style.cursor = 'grabbing';
+    document.body.style.userSelect = 'none';
   };
 
-  const handleMouseMove = (e) => {
-    if (!isDragging.current) return;
-    touchEndX.current = e.clientX;
-    if (Math.abs(touchStartX.current - touchEndX.current) > 8) {
-      isSwiping.current = true;
-    }
-  };
-
-  const handleMouseUp = () => {
-    if (!isDragging.current) return;
-    isDragging.current = false;
-    if (touchStartX.current === null || touchEndX.current === null) {
+  useEffect(() => {
+    const onMouseMove = (e) => {
+      if (!isDragging.current) return;
+      touchEndX.current = e.clientX;
+      if (Math.abs(touchStartX.current - touchEndX.current) > 8) {
+        isSwiping.current = true;
+      }
+    };
+    const onMouseUp = () => {
+      if (!isDragging.current) return;
+      isDragging.current = false;
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      if (touchStartX.current === null || touchEndX.current === null) {
+        touchStartX.current = null;
+        return;
+      }
+      const diff = touchStartX.current - touchEndX.current;
+      if (Math.abs(diff) > 40) {
+        if (diff > 0) goNext();
+        else goPrev();
+      }
+      userInteractedAt.current = Date.now();
       touchStartX.current = null;
-      return;
-    }
-    const diff = touchStartX.current - touchEndX.current;
-    if (Math.abs(diff) > 40) {
-      if (diff > 0) goNext();
-      else goPrev();
-    }
-    userInteractedAt.current = Date.now();
-    touchStartX.current = null;
-    touchEndX.current = null;
-    setTimeout(() => { isSwiping.current = false; }, 200);
-  };
-
-  const handleMouseLeave = () => {
-    if (isDragging.current) handleMouseUp();
-  };
+      touchEndX.current = null;
+      setTimeout(() => { isSwiping.current = false; }, 200);
+    };
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [images.length]);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -267,13 +275,11 @@ const ProductCard = ({ product }) => {
             userSelect: 'none',
           }}
           onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => { setIsHovered(false); handleMouseLeave(); }}
+          onMouseLeave={() => setIsHovered(false)}
           onTouchStart={images.length > 1 ? handleTouchStart : undefined}
           onTouchMove={images.length > 1 ? handleTouchMove : undefined}
           onTouchEnd={images.length > 1 ? handleTouchEnd : undefined}
-          onMouseDown={images.length > 1 ? handleMouseDown : undefined}
-          onMouseMove={images.length > 1 ? handleMouseMove : undefined}
-          onMouseUp={images.length > 1 ? handleMouseUp : undefined}
+          onMouseDown={handleMouseDown}
         >
           {/* Track */}
           <div
@@ -284,6 +290,7 @@ const ProductCard = ({ product }) => {
               height: '100%',
               transform: `translateX(-${trackIndex * 100}%)`,
               transition: animated ? 'transform 0.4s ease-in-out' : 'none',
+              pointerEvents: 'none',
             }}
           >
             {slides.map((imgSrc, idx) => (
@@ -293,6 +300,7 @@ const ProductCard = ({ product }) => {
                 alt={product.name}
                 className="product-image"
                 loading="lazy"
+                draggable={false}
                 style={{ minWidth: '100%', height: '100%', objectFit: 'cover', flexShrink: 0 }}
               />
             ))}
