@@ -52,10 +52,11 @@ const Home = () => {
     ? [banners[banners.length - 1], ...banners, banners[0]]
     : [];
 
-  // Touch/swipe
+  // Touch/swipe & Mouse drag
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
   const isSwiping = useRef(false);
+  const isDragging = useRef(false);
 
   // Auto-play pause
   const userInteractedAt = useRef(null);
@@ -206,6 +207,38 @@ const Home = () => {
     setTimeout(() => { isSwiping.current = false; }, 300);
   };
 
+  // Mouse drag handlers (desktop)
+  const handleMouseDown = (e) => {
+    touchStartX.current = e.clientX;
+    touchEndX.current = null;
+    isSwiping.current = false;
+    isDragging.current = true;
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging.current) return;
+    touchEndX.current = e.clientX;
+    if (Math.abs(touchStartX.current - touchEndX.current) > 8) {
+      isSwiping.current = true;
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    const diff = touchStartX.current - touchEndX.current;
+    if (diff > 50) goNext();
+    else if (diff < -50) goPrev();
+    touchStartX.current = null;
+    touchEndX.current = null;
+    setTimeout(() => { isSwiping.current = false; }, 300);
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging.current) handleMouseUp();
+  };
+
   return (
     <div className="page-home">
       <section className="banner-section container">
@@ -214,6 +247,11 @@ const Home = () => {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
+          style={{ cursor: isDragging.current ? 'grabbing' : 'grab', userSelect: 'none' }}
         >
           <button className="carousel-arrow left-arrow" onClick={goPrev} aria-label="Oldingi slayd">
             <ChevronLeft size={24} />

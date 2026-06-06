@@ -38,10 +38,11 @@ const ProductCard = ({ product }) => {
         : trackIndex - 1)
     : 0;
 
-  // Touch/swipe
+  // Touch/swipe & Mouse drag
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
   const isSwiping = useRef(false);
+  const isDragging = useRef(false);
 
   // Animatsiya tugaganda klondan haqiqiyga sakrash
   useEffect(() => {
@@ -127,6 +128,46 @@ const ProductCard = ({ product }) => {
     touchStartX.current = null;
     touchEndX.current = null;
     setTimeout(() => { isSwiping.current = false; }, 200);
+  };
+
+  // Mouse drag handlers (desktop)
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    touchStartX.current = e.clientX;
+    touchEndX.current = null;
+    isSwiping.current = false;
+    isDragging.current = true;
+    userInteractedAt.current = Date.now();
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging.current) return;
+    touchEndX.current = e.clientX;
+    if (Math.abs(touchStartX.current - touchEndX.current) > 8) {
+      isSwiping.current = true;
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    if (touchStartX.current === null || touchEndX.current === null) {
+      touchStartX.current = null;
+      return;
+    }
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) goNext();
+      else goPrev();
+    }
+    userInteractedAt.current = Date.now();
+    touchStartX.current = null;
+    touchEndX.current = null;
+    setTimeout(() => { isSwiping.current = false; }, 200);
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging.current) handleMouseUp();
   };
 
   useEffect(() => {
@@ -219,12 +260,20 @@ const ProductCard = ({ product }) => {
         {/* Mini karusel */}
         <div
           className="product-image-container"
-          style={{ position: 'relative', overflow: 'hidden' }}
+          style={{
+            position: 'relative',
+            overflow: 'hidden',
+            cursor: images.length > 1 ? 'grab' : 'default',
+            userSelect: 'none',
+          }}
           onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          onMouseLeave={() => { setIsHovered(false); handleMouseLeave(); }}
           onTouchStart={images.length > 1 ? handleTouchStart : undefined}
           onTouchMove={images.length > 1 ? handleTouchMove : undefined}
           onTouchEnd={images.length > 1 ? handleTouchEnd : undefined}
+          onMouseDown={images.length > 1 ? handleMouseDown : undefined}
+          onMouseMove={images.length > 1 ? handleMouseMove : undefined}
+          onMouseUp={images.length > 1 ? handleMouseUp : undefined}
         >
           {/* Track */}
           <div
