@@ -3,6 +3,7 @@ import ProductCard from '../components/ProductCard';
 import { useState, useEffect, useRef } from 'react';
 import { cloudDb } from '../services/cloudDb';
 import { useCart } from '../context/CartContext';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const DEFAULT_BANNERS = [
   {
@@ -292,7 +293,22 @@ const Home = () => {
             ))}
           </div>
 
+          <button className="carousel-arrow left-arrow" onClick={goPrev}>
+            <ChevronLeft size={24} />
+          </button>
+          <button className="carousel-arrow right-arrow" onClick={goNext}>
+            <ChevronRight size={24} />
+          </button>
 
+          <div className="carousel-dots">
+            {banners.map((_, index) => (
+              <button
+                key={index}
+                className={`carousel-dot ${realIndex === index ? 'active' : ''}`}
+                onClick={() => goTo(index)}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
