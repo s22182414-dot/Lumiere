@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { Search, ShoppingCart, User, X, ArrowUp } from 'lucide-react';
+import { Search, ShoppingCart, User, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { products } from '../data';
 import { generateProductUrl } from '../utils/helpers';
@@ -14,6 +14,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const searchRef = useRef(null);
+  const searchBarRef = useRef(null);
+  const [dropdownStyle, setDropdownStyle] = useState({});
 
   // Auth / Login Modal states
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -36,15 +38,42 @@ const Navbar = () => {
       }
     };
     checkLogin();
-    
     window.addEventListener('storage', checkLogin);
     return () => window.removeEventListener('storage', checkLogin);
   }, []);
 
-  // Format Price inside the dropdown
-  const formatPrice = (price) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
+  // Mobil uchun dropdown pozitsiyasini hisoblash
+  const calcDropdownStyle = () => {
+    if (!searchBarRef.current) return {};
+    const isMobile = window.innerWidth <= 900;
+    if (isMobile) {
+      const rect = searchBarRef.current.getBoundingClientRect();
+      return {
+        position: 'fixed',
+        top: rect.bottom + 6,
+        left: 8,
+        right: 8,
+        width: 'auto',
+        zIndex: 99999,
+      };
+    }
+    return {};
   };
+
+  // Dropdown ochilganda pozitsiyani hisoblash
+  useEffect(() => {
+    if (isOpen) {
+      setDropdownStyle(calcDropdownStyle());
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (isOpen) setDropdownStyle(calcDropdownStyle());
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isOpen]);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -63,7 +92,7 @@ const Navbar = () => {
 
   // Filter products in real time and sort by popularity (reviews descending)
   const queryStr = searchQuery.toLowerCase().trim();
-  
+
   const savedProducts = (() => {
     const saved = localStorage.getItem('seller_products');
     return saved ? JSON.parse(saved) : products;
@@ -71,8 +100,8 @@ const Navbar = () => {
 
   const filteredProducts = queryStr
     ? savedProducts
-        .filter(p => 
-          p.name.toLowerCase().includes(queryStr) || 
+        .filter(p =>
+          p.name.toLowerCase().includes(queryStr) ||
           p.category.toLowerCase().includes(queryStr) ||
           (p.description && p.description.toLowerCase().includes(queryStr))
         )
@@ -107,7 +136,6 @@ const Navbar = () => {
 
   const handleKeyDown = (e) => {
     if (!isOpen || filteredProducts.length === 0) return;
-
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setActiveIndex(prev => (prev < displayProducts.length - 1 ? prev + 1 : 0));
@@ -124,6 +152,8 @@ const Navbar = () => {
     }
   };
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
+
   return (
     <header className="navbar">
       <div className="container navbar-container">
@@ -132,11 +162,11 @@ const Navbar = () => {
         </Link>
 
         <div className="search-container-relative" ref={searchRef}>
-          <form className="search-bar" onSubmit={handleSearch}>
-            <input 
-              type="text" 
-              className="search-input" 
-              placeholder="Mahsulotlar va toifalarni qidirish" 
+          <form className="search-bar" ref={searchBarRef} onSubmit={handleSearch}>
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Mahsulotlar va toifalarni qidirish"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -146,8 +176,8 @@ const Navbar = () => {
               onKeyDown={handleKeyDown}
             />
             {searchQuery && (
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="clear-search-btn"
                 onClick={() => {
                   setSearchQuery('');
@@ -164,14 +194,17 @@ const Navbar = () => {
 
           {/* Real-time search dropdown results */}
           {isOpen && searchQuery.trim() && (
-            <div className="search-dropdown">
+            <div
+              className="search-dropdown"
+              style={Object.keys(dropdownStyle).length > 0 ? dropdownStyle : undefined}
+            >
               {displayProducts.length > 0 ? (
                 <>
                   <div className="search-dropdown-header">Topilgan mahsulotlar</div>
                   <div className="search-dropdown-list">
                     {displayProducts.map((product, idx) => (
-                      <div 
-                        key={product.id} 
+                      <div
+                        key={product.id}
                         className={`search-dropdown-item ${idx === activeIndex ? 'active' : ''}`}
                         onClick={() => handleItemClick(product)}
                         onMouseEnter={() => setActiveIndex(idx)}
@@ -211,14 +244,11 @@ const Navbar = () => {
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', outline: 'none' }}
             >
               {userPhoto && !imgError ? (
-                <img 
-                  src={userPhoto} 
-                  alt={userName} 
+                <img
+                  src={userPhoto}
+                  alt={userName}
                   onError={() => setImgError(true)}
-                  style={{
-                    width: '28px', height: '28px', borderRadius: '50%',
-                    objectFit: 'cover'
-                  }} 
+                  style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
                 />
               ) : (
                 <div style={{
@@ -235,8 +265,8 @@ const Navbar = () => {
               </span>
             </button>
           ) : (
-            <button 
-              onClick={() => setShowLoginModal(true)} 
+            <button
+              onClick={() => setShowLoginModal(true)}
               className="action-item"
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', outline: 'none' }}
             >
