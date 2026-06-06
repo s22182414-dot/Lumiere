@@ -1,6 +1,6 @@
 import { useCart } from '../context/CartContext';
-import { ShoppingBag, Star, Minus, Plus } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { ShoppingBag, Star, Minus, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { generateProductUrl } from '../utils/helpers';
 
@@ -10,6 +10,105 @@ const ProductCard = ({ product }) => {
   const quantityInCart = cartItem ? cartItem.quantity : 0;
   const [isAdded, setIsAdded] = useState(false);
   const [dbReviews, setDbReviews] = useState([]);
+
+  // Mini-karusel uchun
+  const images = (product.images && product.images.length > 0)
+    ? product.images
+    : [product.image];
+
+  // Infinite loop uchun klon slaydlar
+  const slides = images.length > 1
+    ? [images[images.length - 1], ...images, images[0]]
+    : images;
+
+  const [trackIndex, setTrackIndex] = useState(1);
+  const [animated, setAnimated] = useState(true);
+  const isTransitioning = useRef(false);
+  const trackRef = useRef(null);
+
+  const realIndex = images.length > 1
+    ? (trackIndex === 0
+        ? images.length - 1
+        : trackIndex === images.length + 1
+        ? 0
+        : trackIndex - 1)
+    : 0;
+
+  // Touch/swipe
+  const touchStartX = useRef(null);
+  const touchEndX = useRef(null);
+  const isSwiping = useRef(false);
+
+  // Animatsiya tugaganda klondan haqiqiyga sakrash
+  useEffect(() => {
+    if (!animated || images.length <= 1) return;
+    const handleTransitionEnd = () => {
+      if (trackIndex === 0) {
+        setAnimated(false);
+        setTrackIndex(images.length);
+      } else if (trackIndex === images.length + 1) {
+        setAnimated(false);
+        setTrackIndex(1);
+      }
+      isTransitioning.current = false;
+    };
+    const track = trackRef.current;
+    if (track) {
+      track.addEventListener('transitionend', handleTransitionEnd);
+      return () => track.removeEventListener('transitionend', handleTransitionEnd);
+    }
+  }, [trackIndex, animated, images.length]);
+
+  useEffect(() => {
+    if (!animated) {
+      const t = setTimeout(() => setAnimated(true), 20);
+      return () => clearTimeout(t);
+    }
+  }, [animated]);
+
+  const goNext = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isTransitioning.current || images.length <= 1) return;
+    isTransitioning.current = true;
+    setAnimated(true);
+    setTrackIndex(prev => prev + 1);
+  };
+
+  const goPrev = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isTransitioning.current || images.length <= 1) return;
+    isTransitioning.current = true;
+    setAnimated(true);
+    setTrackIndex(prev => prev - 1);
+  };
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchEndX.current = null;
+    isSwiping.current = false;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+    if (Math.abs(touchStartX.current - touchEndX.current) > 8) {
+      isSwiping.current = true;
+      e.preventDefault(); // sahifa scrollini to'xtatish
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) goNext(e);
+      else goPrev(e);
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+    setTimeout(() => { isSwiping.current = false; }, 200);
+  };
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -23,7 +122,6 @@ const ProductCard = ({ product }) => {
           }
         } catch (e) {}
       };
-
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews?productId=${product.id}`);
         if (res.ok) {
@@ -40,20 +138,17 @@ const ProductCard = ({ product }) => {
   }, [product.id]);
 
   const totalReviewsCount = dbReviews.length;
-  const averageRating = totalReviewsCount > 0 
-    ? (dbReviews.reduce((sum, r) => sum + r.rating, 0) / totalReviewsCount).toFixed(1) 
+  const averageRating = totalReviewsCount > 0
+    ? (dbReviews.reduce((sum, r) => sum + r.rating, 0) / totalReviewsCount).toFixed(1)
     : "0.0";
 
   const handleAdd = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    // Add to cart in global context
     addToCart(product);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
 
-    // Dynamic premium fly-to-cart animation
     const cardEl = e.currentTarget.closest('.product-card');
     const imageEl = cardEl ? cardEl.querySelector('.product-image') : null;
     const cartIcon = document.getElementById('nav-cart-icon');
@@ -61,8 +156,6 @@ const ProductCard = ({ product }) => {
     if (imageEl && cartIcon) {
       const startRect = imageEl.getBoundingClientRect();
       const endRect = cartIcon.getBoundingClientRect();
-
-      // Create flyer clone element
       const flyer = document.createElement('img');
       flyer.src = product.image;
       flyer.style.position = 'fixed';
@@ -75,10 +168,7 @@ const ProductCard = ({ product }) => {
       flyer.style.pointerEvents = 'none';
       flyer.style.boxShadow = '0 8px 24px rgba(255, 51, 102, 0.4)';
       flyer.style.transition = 'all 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
-      
       document.body.appendChild(flyer);
-
-      // Start the physics-based curved movement frame
       requestAnimationFrame(() => {
         flyer.style.left = `${endRect.left + endRect.width / 2 - 15}px`;
         flyer.style.top = `${endRect.top + endRect.height / 2 - 15}px`;
@@ -88,15 +178,10 @@ const ProductCard = ({ product }) => {
         flyer.style.borderRadius = '50%';
         flyer.style.transform = 'scale(0.1) rotate(540deg)';
       });
-
-      // Remove flyer on completion and trigger elastic navbar badge bounce
       setTimeout(() => {
         flyer.remove();
-        
         cartIcon.classList.add('bump-cart');
-        setTimeout(() => {
-          cartIcon.classList.remove('bump-cart');
-        }, 500);
+        setTimeout(() => cartIcon.classList.remove('bump-cart'), 500);
       }, 800);
     }
   };
@@ -107,20 +192,81 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="product-card">
-      <Link to={generateProductUrl(product.id, product.name)} className="product-card-link" style={{ display: 'flex', flexDirection: 'column', height: '100%', color: 'inherit', textDecoration: 'none' }}>
-        <div className="product-image-container">
-          <img src={product.image} alt={product.name} className="product-image" loading="lazy" />
+      <Link
+        to={generateProductUrl(product.id, product.name)}
+        className="product-card-link"
+        style={{ display: 'flex', flexDirection: 'column', height: '100%', color: 'inherit', textDecoration: 'none' }}
+      >
+        {/* Mini karusel */}
+        <div
+          className="product-image-container"
+          style={{ position: 'relative', overflow: 'hidden' }}
+          onTouchStart={images.length > 1 ? handleTouchStart : undefined}
+          onTouchMove={images.length > 1 ? handleTouchMove : undefined}
+          onTouchEnd={images.length > 1 ? handleTouchEnd : undefined}
+        >
+          {/* Track */}
+          <div
+            ref={trackRef}
+            style={{
+              display: 'flex',
+              width: '100%',
+              height: '100%',
+              transform: `translateX(-${trackIndex * 100}%)`,
+              transition: animated ? 'transform 0.4s ease-in-out' : 'none',
+            }}
+          >
+            {slides.map((imgSrc, idx) => (
+              <img
+                key={idx}
+                src={imgSrc}
+                alt={product.name}
+                className="product-image"
+                loading="lazy"
+                style={{ minWidth: '100%', height: '100%', objectFit: 'cover', flexShrink: 0 }}
+              />
+            ))}
+          </div>
+
+          {/* Strelkalar — faqat bir nechta rasm bo'lsa */}
+          {images.length > 1 && (
+            <>
+              <button
+                className="card-carousel-arrow card-carousel-left"
+                onClick={goPrev}
+                aria-label="Oldingi rasm"
+              >
+                <ChevronLeft size={14} />
+              </button>
+              <button
+                className="card-carousel-arrow card-carousel-right"
+                onClick={goNext}
+                aria-label="Keyingi rasm"
+              >
+                <ChevronRight size={14} />
+              </button>
+
+              {/* Nuqtachalar */}
+              <div className="card-carousel-dots">
+                {images.map((_, idx) => (
+                  <span
+                    key={idx}
+                    className={`card-carousel-dot ${realIndex === idx ? 'active' : ''}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
-        
+
         <div className="product-info">
           <h3 className="product-name">{product.name}</h3>
-          
+
           <div className="product-rating">
             <Star size={12} className="star-icon" />
             <span>{averageRating} ({totalReviewsCount} baho)</span>
           </div>
-          
-          
+
           <div className="product-price-row" style={{ marginTop: 'auto', marginBottom: '8px' }}>
             <div className="price-col">
               <span className="current-price">{formatPrice(product.price)}</span>
@@ -129,31 +275,23 @@ const ProductCard = ({ product }) => {
 
           {quantityInCart > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-              <div 
+              <div
                 className="product-quantity-selector"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
               >
-                <button 
+                <button
                   className="product-quantity-btn"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (quantityInCart === 1) {
-                      removeFromCart(product.id);
-                    } else {
-                      updateQuantity(product.id, quantityInCart - 1);
-                    }
+                    if (quantityInCart === 1) removeFromCart(product.id);
+                    else updateQuantity(product.id, quantityInCart - 1);
                   }}
                 >
                   <Minus size={16} strokeWidth={2.5} />
                 </button>
-                
                 <span style={{ userSelect: 'none' }}>{quantityInCart}</span>
-                
-                <button 
+                <button
                   className="product-quantity-btn"
                   onClick={(e) => {
                     e.preventDefault();
@@ -164,37 +302,25 @@ const ProductCard = ({ product }) => {
                   <Plus size={16} strokeWidth={2.5} />
                 </button>
               </div>
-              
-              <Link 
+
+              <Link
                 to="/cart"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
+                onClick={(e) => e.stopPropagation()}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '100%',
-                  padding: '6px 12px',
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'white',
-                  borderRadius: 'var(--radius-md)',
-                  textDecoration: 'none',
-                  fontSize: '0.8rem',
-                  fontWeight: '700',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  width: '100%', padding: '6px 12px',
+                  backgroundColor: 'var(--color-primary)', color: 'white',
+                  borderRadius: 'var(--radius-md)', textDecoration: 'none',
+                  fontSize: '0.8rem', fontWeight: '700',
                   boxShadow: '0 2px 8px rgba(255, 51, 102, 0.15)',
-                  transition: 'all 0.2s',
-                  boxSizing: 'border-box'
+                  transition: 'all 0.2s', boxSizing: 'border-box'
                 }}
               >
                 Savatga o'tish
               </Link>
             </div>
           ) : (
-            <button 
-              className="add-to-cart-btn-full" 
-              onClick={handleAdd}
-            >
+            <button className="add-to-cart-btn-full" onClick={handleAdd}>
               <ShoppingBag size={18} strokeWidth={2} />
               <span>Savatga</span>
             </button>
