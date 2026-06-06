@@ -453,19 +453,29 @@ const Checkout = () => {
   };
 
   return (
-    <div className="checkout-page-wrapper" style={{ backgroundColor: '#fcfcfc', minHeight: '100vh', padding: '0.75rem 0.5rem', overflowX: 'hidden', boxSizing: 'border-box' }}>
+    <div className="checkout-page-wrapper">
       <style>{`
         .checkout-page-wrapper {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
           color: #1a1a1a;
           background-color: #f8fafc;
+          min-height: 100vh;
+          padding: 1.5rem 1rem;
+          overflow-x: hidden;
+          box-sizing: border-box;
         }
-        
+
         .checkout-container {
           max-width: 1100px;
           margin: 0 auto;
           width: 100%;
           box-sizing: border-box;
+        }
+
+        .checkout-layout {
+          display: grid;
+          grid-template-columns: 1.6fr 1fr;
+          gap: 2rem;
         }
 
         .checkout-header {
@@ -500,18 +510,15 @@ const Checkout = () => {
           color: #8b96a5;
         }
 
-        .checkout-layout {
-          display: grid;
-          grid-template-columns: 1.6fr 1fr;
-          gap: 2rem;
-        }
-
         .checkout-section-card {
           background: #ffffff;
           padding: 2rem;
           border-radius: 12px;
           border: 1px solid #e6e8eb;
           margin-bottom: 1.5rem;
+          box-sizing: border-box;
+          width: 100%;
+          overflow: hidden;
         }
 
         .section-title-new {
@@ -708,6 +715,25 @@ const Checkout = () => {
           font-weight: 700;
           font-size: 0.88rem;
           flex-shrink: 0;
+          white-space: nowrap;
+        }
+
+        .checkout-subtotal-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.75rem;
+          color: #8b96a5;
+          font-size: 0.88rem;
+          width: 100%;
+          box-sizing: border-box;
+        }
+        .checkout-subtotal-row span:last-child {
+          font-weight: 600;
+          color: #1f1f1f;
+          white-space: nowrap;
+          flex-shrink: 0;
+          margin-left: 8px;
         }
 
         .checkout-total-row {
@@ -744,23 +770,12 @@ const Checkout = () => {
         }
 
         @media (max-width: 900px) {
-          .checkout-total-row {
-            font-size: 1rem !important;
-            margin-bottom: 1.1rem !important;
-            padding-top: 0.75rem !important;
-          }
-          .checkout-submit-btn {
-            padding: 0.85rem !important;
-            font-size: 0.9rem !important;
-            border-radius: 10px !important;
-          }
-        }
-
           .checkout-page-wrapper {
-            padding: 0.5rem 0.4rem !important;
+            padding: 0.5rem 0.5rem !important;
           }
           .checkout-container {
             padding: 0 !important;
+            width: 100% !important;
           }
           .checkout-layout {
             grid-template-columns: 1fr !important;
@@ -771,9 +786,12 @@ const Checkout = () => {
             gap: 0 !important;
           }
           .checkout-section-card {
-            padding: 1rem 0.9rem !important;
+            padding: 1rem !important;
             margin-bottom: 0.75rem !important;
             border-radius: 12px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            overflow: visible !important;
           }
           .checkout-header {
             margin-bottom: 0.6rem !important;
@@ -798,6 +816,8 @@ const Checkout = () => {
             padding: 0.6rem 0.75rem !important;
             font-size: 0.85rem !important;
             border-radius: 8px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
           }
           .payment-options-container {
             gap: 8px !important;
@@ -806,6 +826,9 @@ const Checkout = () => {
             padding: 0.75rem 0.85rem !important;
             gap: 10px !important;
             border-radius: 10px !important;
+          }
+          .payment-option-info {
+            min-width: 0 !important;
           }
           .payment-title {
             font-size: 0.82rem !important;
@@ -817,7 +840,7 @@ const Checkout = () => {
             margin-top: 2px !important;
           }
           .checkout-items-list {
-            max-height: 180px !important;
+            max-height: 200px !important;
             gap: 8px !important;
             margin-bottom: 0.85rem !important;
           }
@@ -829,6 +852,10 @@ const Checkout = () => {
             width: 44px !important;
             height: 44px !important;
           }
+          .checkout-item-details {
+            min-width: 0 !important;
+            flex: 1 !important;
+          }
           .checkout-item-name {
             font-size: 0.8rem !important;
           }
@@ -836,7 +863,20 @@ const Checkout = () => {
             font-size: 0.72rem !important;
           }
           .checkout-item-price {
-            font-size: 0.8rem !important;
+            font-size: 0.82rem !important;
+            white-space: nowrap !important;
+          }
+          .checkout-subtotal-row {
+            font-size: 0.82rem !important;
+          }
+          .checkout-total-row {
+            font-size: 1rem !important;
+            margin-bottom: 1rem !important;
+            padding-top: 0.75rem !important;
+          }
+          .checkout-submit-btn {
+            padding: 0.85rem !important;
+            font-size: 0.9rem !important;
           }
           .btn-back-to-cart {
             font-size: 0.85rem !important;
@@ -852,6 +892,7 @@ const Checkout = () => {
             top: 100px;
           }
         }
+
 
         /* ─── Real Card Payment Gateway Modal & Card Mockup ─── */
 
@@ -1216,9 +1257,9 @@ const Checkout = () => {
                 ))}
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', color: '#8b96a5', fontSize: '0.88rem' }}>
+              <div className="checkout-subtotal-row">
                 <span>Mahsulotlar jami:</span>
-                <span style={{ fontWeight: '600', color: '#1f1f1f' }}>{formatPrice(getCheckoutTotal())}</span>
+                <span>{formatPrice(getCheckoutTotal())}</span>
               </div>
 
 
