@@ -1,7 +1,7 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, X, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cloudDb } from '../services/cloudDb';
 import { useCart } from '../context/CartContext';
 
@@ -29,21 +29,110 @@ const DEFAULT_BANNERS = [
 const Home = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [localProducts, setLocalProducts] = useState([]);
   const [banners, setBanners] = useState(DEFAULT_BANNERS);
 
-  // Touch/swipe support
+  // Infinite carousel state
+  // Haqiqiy index: 0..banners.length-1
+  // Track index: 1..banners.length (chunki [klon_oxirgi, ...banners, klon_birinchi])
+  const [trackIndex, setTrackIndex] = useState(1);
+  const [animated, setAnimated] = useState(true);
+  const isTransitioning = useRef(false);
+  const trackRef = useRef(null);
+
+  // Haqiqiy slayd indeksi (nuqtalar uchun)
+  const realIndex = trackIndex === 0
+    ? banners.length - 1
+    : trackIndex === banners.length + 1
+    ? 0
+    : trackIndex - 1;
+
+  // Klon slaydlar: [oxirgi, ...barchasi, birinchi]
+  const slides = banners.length > 0
+    ? [banners[banners.length - 1], ...banners, banners[0]]
+    : [];
+
+  // Touch/swipe
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
   const isSwiping = useRef(false);
 
-  // Auto-play pause on user interaction
+  // Auto-play pause
   const userInteractedAt = useRef(null);
-  const PAUSE_DURATION = 7000; // foydalanuvchi to'xtatgandan keyin 7s kutadi
+  const PAUSE_DURATION = 7000;
+
+  // Animatsiya tugagandan keyin klon slayddan haqiqiy slaydga sakrash
+  useEffect(() => {
+    if (!animated) return;
+
+    const handleTransitionEnd = () => {
+      if (trackIndex === 0) {
+        // Oxirgi klon → haqiqiy oxirgi slayd
+        setAnimated(false);
+        setTrackIndex(banners.length);
+      } else if (trackIndex === banners.length + 1) {
+        // Birinchi klon → haqiqiy birinchi slayd
+        setAnimated(false);
+        setTrackIndex(1);
+      }
+      isTransitioning.current = false;
+    };
+
+    const track = trackRef.current;
+    if (track) {
+      track.addEventListener('transitionend', handleTransitionEnd);
+      return () => track.removeEventListener('transitionend', handleTransitionEnd);
+    }
+  }, [trackIndex, animated, banners.length]);
+
+  // animated false bo'lganda, bir tick o'tib qayta yoqamiz
+  useEffect(() => {
+    if (!animated) {
+      const t = setTimeout(() => setAnimated(true), 20);
+      return () => clearTimeout(t);
+    }
+  }, [animated]);
+
+  const resetInteraction = () => {
+    userInteractedAt.current = Date.now();
+  };
+
+  const goNext = () => {
+    if (isTransitioning.current) return;
+    isTransitioning.current = true;
+    resetInteraction();
+    setAnimated(true);
+    setTrackIndex(prev => prev + 1);
+  };
+
+  const goPrev = () => {
+    if (isTransitioning.current) return;
+    isTransitioning.current = true;
+    resetInteraction();
+    setAnimated(true);
+    setTrackIndex(prev => prev - 1);
+  };
+
+  const goTo = (realIdx) => {
+    if (isTransitioning.current) return;
+    isTransitioning.current = true;
+    resetInteraction();
+    setAnimated(true);
+    setTrackIndex(realIdx + 1);
+  };
+
+  // Auto-play
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const sinceInteraction = Date.now() - (userInteractedAt.current || 0);
+      if (sinceInteraction >= PAUSE_DURATION) {
+        goNext();
+      }
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [banners.length]);
 
   const handleBannerClick = (banner) => {
-    // Faqat swipe bo'lmagan holatda navigate qilamiz
     if (!isSwiping.current) {
       navigate(`/banner/${banner._id}`);
     }
@@ -78,48 +167,18 @@ const Home = () => {
 
   useEffect(() => {
     loadBanners();
-
     const handleStorageChange = (e) => {
-      if (e.key === 'banner_updated_at') {
-        loadBanners();
-      }
+      if (e.key === 'banner_updated_at') loadBanners();
     };
-
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('banner_updated', loadBanners);
-
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('banner_updated', loadBanners);
     };
   }, []);
 
-  const resetInteraction = () => {
-    userInteractedAt.current = Date.now();
-  };
-
-  const nextSlide = () => {
-    resetInteraction();
-    setCurrentSlide((prev) => (prev + 1) % banners.length);
-  };
-
-  const prevSlide = () => {
-    resetInteraction();
-    setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
-  };
-
-  // Auto-play: foydalanuvchi oxirgi marta o'zgartirganidan PAUSE_DURATION o'tsa davom etadi
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const sinceInteraction = Date.now() - (userInteractedAt.current || 0);
-      if (sinceInteraction >= PAUSE_DURATION) {
-        setCurrentSlide((prev) => (prev + 1) % banners.length);
-      }
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [banners.length]);
-
-  // Touch handlers — surish orqali karusel
+  // Touch handlers
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
     touchEndX.current = null;
@@ -138,9 +197,9 @@ const Home = () => {
     const diff = touchStartX.current - touchEndX.current;
     const SWIPE_THRESHOLD = 50;
     if (diff > SWIPE_THRESHOLD) {
-      nextSlide(); // Chapga surish → keyingi slayd
+      goNext();
     } else if (diff < -SWIPE_THRESHOLD) {
-      prevSlide(); // O'ngga surish → oldingi slayd
+      goPrev();
     }
     touchStartX.current = null;
     touchEndX.current = null;
@@ -156,15 +215,20 @@ const Home = () => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <button className="carousel-arrow left-arrow" onClick={prevSlide} aria-label="Oldingi slayd">
+          <button className="carousel-arrow left-arrow" onClick={goPrev} aria-label="Oldingi slayd">
             <ChevronLeft size={24} />
           </button>
 
+          {/* Track: klon + haqiqiy + klon */}
           <div
+            ref={trackRef}
             className="carousel-track"
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            style={{
+              transform: `translateX(-${trackIndex * 100}%)`,
+              transition: animated ? 'transform 0.5s ease-in-out' : 'none',
+            }}
           >
-            {banners.map((banner, index) => (
+            {slides.map((banner, index) => (
               <div
                 className="banner carousel-slide clickable-banner"
                 key={index}
@@ -184,7 +248,7 @@ const Home = () => {
             ))}
           </div>
 
-          <button className="carousel-arrow right-arrow" onClick={nextSlide} aria-label="Keyingi slayd">
+          <button className="carousel-arrow right-arrow" onClick={goNext} aria-label="Keyingi slayd">
             <ChevronRight size={24} />
           </button>
 
@@ -192,8 +256,8 @@ const Home = () => {
             {banners.map((_, index) => (
               <button
                 key={index}
-                className={`carousel-dot ${currentSlide === index ? 'active' : ''}`}
-                onClick={() => { resetInteraction(); setCurrentSlide(index); }}
+                className={`carousel-dot ${realIndex === index ? 'active' : ''}`}
+                onClick={() => goTo(index)}
                 aria-label={`Slide ${index + 1}`}
               />
             ))}
