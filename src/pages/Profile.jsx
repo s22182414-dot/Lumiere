@@ -1046,25 +1046,27 @@ const Profile = () => {
                 {reviews.length > 0 ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     {reviews.map((rev) => (
-                      <div key={rev._id || rev.id} className="item-card" style={{ alignItems: 'flex-start' }}>
-                        <Link to={`/product/${rev.productId}`} className="product-link-item" style={{ alignItems: 'flex-start' }}>
+                      <div
+                        key={rev._id || rev.id}
+                        className="item-card"
+                        style={{ alignItems: 'flex-start', position: 'relative', paddingRight: '2.5rem' }}
+                      >
+                        <Link to={`/product/${rev.productId}`} className="product-link-item" style={{ alignItems: 'flex-start', flex: 1 }}>
                           <img src={rev.productImage} alt={rev.productName} style={{
                             width: '60px', height: '60px', objectFit: 'cover',
                             borderRadius: '8px', border: '1px solid var(--color-border)', flexShrink: 0, marginTop: '2px'
                           }} />
                           
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
-                              <div className="product-title-hover" style={{ fontWeight: '700', fontSize: '0.95rem', color: 'var(--color-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: '1rem' }}>
-                                {rev.productName}
-                              </div>
-                              <span style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', flexShrink: 0 }}>
-                                {rev.date}
-                              </span>
+                            <div style={{ fontWeight: '700', fontSize: '0.92rem', color: 'var(--color-text)', lineHeight: '1.35', marginBottom: '2px' }}>
+                              {rev.productName}
+                            </div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginBottom: '4px' }}>
+                              {rev.date}
                             </div>
 
                             {/* Stars */}
-                            <div style={{ display: 'flex', gap: '3px', marginTop: '4px' }}>
+                            <div style={{ display: 'flex', gap: '3px', marginBottom: '6px' }}>
                               {[...Array(5)].map((_, i) => (
                                 <Star
                                   key={i}
@@ -1076,18 +1078,19 @@ const Profile = () => {
                               ))}
                             </div>
 
-                            {/* Review comment text - Clean, un-nested */}
-                            <div style={{ marginTop: '10px', fontSize: '0.92rem', lineHeight: '1.5', color: '#2d3748' }}>
+                            {/* Review comment text */}
+                            <div style={{ fontSize: '0.88rem', lineHeight: '1.5', color: '#2d3748' }}>
                               {rev.comment}
                             </div>
                           </div>
                         </Link>
 
-                        {/* Delete button on the far right */}
+                        {/* Delete button — yuqori o'ng burchakda, absolute */}
                         <button
                           onClick={() => handleDeleteReview(rev._id || rev.id)}
                           className="review-delete-btn"
                           title="Sharhni o'chirish"
+                          style={{ position: 'absolute', top: '12px', right: '12px' }}
                         >
                           <Trash2 size={16} />
                         </button>
