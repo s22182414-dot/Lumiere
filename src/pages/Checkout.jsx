@@ -453,7 +453,7 @@ const Checkout = () => {
   };
 
   return (
-    <div className="checkout-page-wrapper" style={{ backgroundColor: '#fcfcfc', minHeight: '100vh', padding: '1rem', overflowX: 'hidden', boxSizing: 'border-box' }}>
+    <div className="checkout-page-wrapper" style={{ backgroundColor: '#fcfcfc', minHeight: '100vh', padding: '0.75rem 0.5rem', overflowX: 'hidden', boxSizing: 'border-box' }}>
       <style>{`
         .checkout-page-wrapper {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -710,67 +710,136 @@ const Checkout = () => {
           flex-shrink: 0;
         }
 
+        .checkout-total-row {
+          display: flex;
+          justify-content: space-between;
+          border-top: 1px solid #eef0f2;
+          padding-top: 1rem;
+          margin-bottom: 1.75rem;
+          font-size: 1.2rem;
+          font-weight: 800;
+          color: #FF3366;
+        }
+
+        .checkout-submit-btn {
+          width: 100%;
+          background: var(--color-primary);
+          color: white;
+          padding: 1rem;
+          border-radius: 10px;
+          font-weight: 750;
+          font-size: 0.98rem;
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 4px 16px rgba(255, 51, 102, 0.25);
+          transition: background-color 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+        .checkout-submit-btn:disabled {
+          opacity: 0.75;
+          cursor: not-allowed;
+        }
+
         @media (max-width: 900px) {
-          .checkout-page-wrapper {
-            padding: 0.5rem !important;
+          .checkout-total-row {
+            font-size: 1rem !important;
+            margin-bottom: 1.1rem !important;
+            padding-top: 0.75rem !important;
           }
-          .checkout-layout {
-            grid-template-columns: 1fr;
-            gap: 1rem !important;
-          }
-          .form-grid-2 {
-            grid-template-columns: 1fr;
-            gap: 0.75rem !important;
-          }
-          .checkout-section-card {
-            padding: 1.25rem 1rem !important;
-            margin-bottom: 1rem !important;
+          .checkout-submit-btn {
+            padding: 0.85rem !important;
+            font-size: 0.9rem !important;
             border-radius: 10px !important;
           }
-          .checkout-header {
+        }
+
+          .checkout-page-wrapper {
+            padding: 0.5rem 0.4rem !important;
+          }
+          .checkout-container {
+            padding: 0 !important;
+          }
+          .checkout-layout {
+            grid-template-columns: 1fr !important;
+            gap: 0.75rem !important;
+          }
+          .form-grid-2 {
+            grid-template-columns: 1fr !important;
+            gap: 0 !important;
+          }
+          .checkout-section-card {
+            padding: 1rem 0.9rem !important;
             margin-bottom: 0.75rem !important;
+            border-radius: 12px !important;
+          }
+          .checkout-header {
+            margin-bottom: 0.6rem !important;
+            padding: 0 0.1rem !important;
           }
           .checkout-breadcrumb {
-            display: none;
+            display: none !important;
           }
           .section-title-new {
-            font-size: 1.1rem !important;
-            margin-bottom: 1rem !important;
+            font-size: 1rem !important;
+            font-weight: 700 !important;
+            margin-bottom: 0.85rem !important;
           }
           .input-group-new {
-            margin-bottom: 0.85rem !important;
+            margin-bottom: 0.7rem !important;
             gap: 4px !important;
           }
-          .input-new, .select-new {
-            padding: 0.65rem 0.85rem !important;
-            font-size: 0.88rem !important;
+          .input-group-new label {
+            font-size: 0.8rem !important;
           }
-          .payment-option-card {
-            padding: 0.85rem !important;
-            gap: 10px !important;
-            align-items: flex-start !important;
+          .input-new, .select-new {
+            padding: 0.6rem 0.75rem !important;
+            font-size: 0.85rem !important;
             border-radius: 8px !important;
           }
-          .radio-dot-outer {
-            margin-top: 3px !important;
+          .payment-options-container {
+            gap: 8px !important;
+          }
+          .payment-option-card {
+            padding: 0.75rem 0.85rem !important;
+            gap: 10px !important;
+            border-radius: 10px !important;
           }
           .payment-title {
-            font-size: 0.88rem !important;
+            font-size: 0.82rem !important;
+            line-height: 1.3 !important;
           }
           .payment-subtitle {
-            font-size: 0.75rem !important;
+            font-size: 0.72rem !important;
+            line-height: 1.4 !important;
+            margin-top: 2px !important;
           }
           .checkout-items-list {
-            max-height: 160px !important;
-            gap: 10px !important;
-            margin-bottom: 1rem !important;
+            max-height: 180px !important;
+            gap: 8px !important;
+            margin-bottom: 0.85rem !important;
           }
           .checkout-item-row {
-            gap: 10px !important;
-            padding-bottom: 10px !important;
+            gap: 8px !important;
+            padding-bottom: 8px !important;
+          }
+          .checkout-item-thumb {
+            width: 44px !important;
+            height: 44px !important;
           }
           .checkout-item-name {
-            font-size: 0.82rem !important;
+            font-size: 0.8rem !important;
+          }
+          .checkout-item-qty {
+            font-size: 0.72rem !important;
+          }
+          .checkout-item-price {
+            font-size: 0.8rem !important;
+          }
+          .btn-back-to-cart {
+            font-size: 0.85rem !important;
           }
         }
 
@@ -1153,41 +1222,15 @@ const Checkout = () => {
               </div>
 
 
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                borderTop: '1px solid #eef0f2', 
-                paddingTop: '1rem', 
-                marginBottom: '1.75rem', 
-                fontSize: '1.2rem', 
-                fontWeight: '800', 
-                color: '#FF3366' 
-              }}>
+              <div className="checkout-total-row">
                 <span>Jami summa:</span>
                 <span>{formatPrice(getCheckoutTotal())}</span>
               </div>
 
-              <button 
+              <button
                 type="submit"
                 disabled={isSubmitting}
-                style={{
-                  width: '100%',
-                  background: 'var(--color-primary)',
-                  color: 'white',
-                  padding: '1rem',
-                  borderRadius: '10px',
-                  fontWeight: '750',
-                  fontSize: '0.98rem',
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  border: 'none',
-                  boxShadow: '0 4px 16px rgba(255, 51, 102, 0.25)',
-                  transition: 'background-color 0.2s',
-                  opacity: isSubmitting ? 0.75 : 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px'
-                }}
+                className="checkout-submit-btn"
               >
                 {isSubmitting ? (
                   'Buyurtma rasmiylashtirilmoqda...'
