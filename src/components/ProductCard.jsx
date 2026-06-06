@@ -25,6 +25,10 @@ const ProductCard = ({ product }) => {
   const [animated, setAnimated] = useState(true);
   const isTransitioning = useRef(false);
   const trackRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const userInteractedAt = useRef(null);
+  const AUTO_INTERVAL = 2500; // 2.5 soniyada bir almashinadi
+  const PAUSE_AFTER_SWIPE = 5000; // swiped dan keyin 5s kutadi
 
   const realIndex = images.length > 1
     ? (trackIndex === 0
@@ -66,20 +70,33 @@ const ProductCard = ({ product }) => {
     }
   }, [animated]);
 
-  const goNext = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  // Auto-play: hover bo'lganda yoki swipe qilinganda to'xtaydi
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const timer = setInterval(() => {
+      if (isHovered) return;
+      const sinceSwipe = Date.now() - (userInteractedAt.current || 0);
+      if (sinceSwipe < PAUSE_AFTER_SWIPE) return;
+      if (isTransitioning.current) return;
+      isTransitioning.current = true;
+      setAnimated(true);
+      setTrackIndex(prev => prev + 1);
+    }, AUTO_INTERVAL);
+    return () => clearInterval(timer);
+  }, [images.length, isHovered]);
+
+  const goNext = () => {
     if (isTransitioning.current || images.length <= 1) return;
     isTransitioning.current = true;
+    userInteractedAt.current = Date.now();
     setAnimated(true);
     setTrackIndex(prev => prev + 1);
   };
 
-  const goPrev = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const goPrev = () => {
     if (isTransitioning.current || images.length <= 1) return;
     isTransitioning.current = true;
+    userInteractedAt.current = Date.now();
     setAnimated(true);
     setTrackIndex(prev => prev - 1);
   };
@@ -88,23 +105,25 @@ const ProductCard = ({ product }) => {
     touchStartX.current = e.touches[0].clientX;
     touchEndX.current = null;
     isSwiping.current = false;
+    userInteractedAt.current = Date.now();
   };
 
   const handleTouchMove = (e) => {
     touchEndX.current = e.touches[0].clientX;
     if (Math.abs(touchStartX.current - touchEndX.current) > 8) {
       isSwiping.current = true;
-      e.preventDefault(); // sahifa scrollini to'xtatish
+      e.preventDefault();
     }
   };
 
-  const handleTouchEnd = (e) => {
+  const handleTouchEnd = () => {
     if (touchStartX.current === null || touchEndX.current === null) return;
     const diff = touchStartX.current - touchEndX.current;
     if (Math.abs(diff) > 40) {
-      if (diff > 0) goNext(e);
-      else goPrev(e);
+      if (diff > 0) goNext();
+      else goPrev();
     }
+    userInteractedAt.current = Date.now();
     touchStartX.current = null;
     touchEndX.current = null;
     setTimeout(() => { isSwiping.current = false; }, 200);
@@ -201,6 +220,8 @@ const ProductCard = ({ product }) => {
         <div
           className="product-image-container"
           style={{ position: 'relative', overflow: 'hidden' }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           onTouchStart={images.length > 1 ? handleTouchStart : undefined}
           onTouchMove={images.length > 1 ? handleTouchMove : undefined}
           onTouchEnd={images.length > 1 ? handleTouchEnd : undefined}
