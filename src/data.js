@@ -8,6 +8,11 @@ export const products = [
     reviews: 1420,
     description: "Dunyoga mashhur Missha BB kremi. Yuzdagi kamchiliklarni mukammal yashiradi va quyoshdan himoya qiladi.",
     image: "https://images.unsplash.com/photo-1631730359585-38a4935cbec4?q=80&w=800&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1631730359585-38a4935cbec4?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1526758097130-bab247274f58?q=80&w=800&auto=format&fit=crop",
+    ],
     featured: true,
   },
   {
@@ -19,6 +24,11 @@ export const products = [
     reviews: 890,
     description: "Makiyajni qiyinchiliksiz va ishqalashsiz tozalash uchun ideal vosita.",
     image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=800&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop",
+    ],
     featured: true,
   },
   {
@@ -30,6 +40,11 @@ export const products = [
     reviews: 2150,
     description: "16 soatgacha saqlanib turuvchi super chidamli mat pomada.",
     image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?q=80&w=800&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1586495777744-4413f21062fa?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1631214503851-25e69dab93a9?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=800&auto=format&fit=crop",
+    ],
     featured: true,
   },
   {
@@ -41,6 +56,11 @@ export const products = [
     reviews: 645,
     description: "Yog'li va muammoli terilar uchun Koreya yuz yuvish vositasi.",
     image: "https://images.unsplash.com/photo-1629198688000-71f23e745b6e?q=80&w=800&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1629198688000-71f23e745b6e?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1599305090598-fe179d501227?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop",
+    ],
     featured: false,
   },
   {
@@ -52,6 +72,11 @@ export const products = [
     reviews: 1320,
     description: "Sochlarga jilo va yumshoqlik baxsh etuvchi universal yog'.",
     image: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=800&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800&auto=format&fit=crop",
+    ],
     featured: false,
   },
   {
@@ -63,6 +88,11 @@ export const products = [
     reviews: 3512,
     description: "Kipriklarga sahna hajmini beruvchi afsonaviy qora tush.",
     image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=800&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1583241475880-083f84372725?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=800&auto=format&fit=crop",
+    ],
     featured: false,
-  }
+  },
 ];

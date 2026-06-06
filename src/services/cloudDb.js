@@ -19,20 +19,37 @@ export const cloudDb = {
     return id;
   },
 
-  // Fetch all products from the cloud database
+  // Get all products from the cloud database
   async getProducts() {
     if (cachedProducts) {
       return cachedProducts;
     }
 
+    // Helper: mahsulotlarga images maydoni yo'q bo'lsa, initialProducts dan qo'shib beradi
+    const mergeImages = (list) => {
+      return list.map(p => {
+        if (!p.images || p.images.length === 0) {
+          const seed = initialProducts.find(ip => ip.id === p.id);
+          if (seed && seed.images) {
+            return { ...p, images: seed.images };
+          }
+        }
+        return p;
+      });
+    };
+
     // 1. LocalStorage is the absolute primary source of truth (Offline-First)
     const local = localStorage.getItem('seller_products');
     if (local) {
-      cachedProducts = JSON.parse(local);
-      
+      const parsed = JSON.parse(local);
+      cachedProducts = mergeImages(parsed);
+
+      // Agar images qo'shilgan bo'lsa, localStorage ni ham yangilaymiz
+      localStorage.setItem('seller_products', JSON.stringify(cachedProducts));
+
       // Asynchronously backup to the cloud database in the background
       this.syncLocalToCloud(cachedProducts);
-      
+
       return cachedProducts;
     }
 
@@ -40,7 +57,7 @@ export const cloudDb = {
     const objId = this.getObjectId();
     try {
       const response = await fetch(`${API_URL}/${objId}`);
-      
+
       if (response.status === 404) {
         console.log("Cloud object not found, seeding default list...");
         await this.initializeNewCluster(initialProducts);
@@ -50,10 +67,10 @@ export const cloudDb = {
       }
 
       if (!response.ok) throw new Error("Cloud DB retrieval failed");
-      
+
       const result = await response.json();
       if (result && result.data && result.data.list) {
-        cachedProducts = result.data.list;
+        cachedProducts = mergeImages(result.data.list);
         localStorage.setItem('seller_products', JSON.stringify(cachedProducts));
         return cachedProducts;
       } else {
