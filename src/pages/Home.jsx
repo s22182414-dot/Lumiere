@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, X, ShoppingCart } from 'lucide-react';
 import { cloudDb } from '../services/cloudDb';
 import { useCart } from '../context/CartContext';
@@ -33,8 +33,16 @@ const Home = () => {
   const [localProducts, setLocalProducts] = useState([]);
   const [banners, setBanners] = useState(DEFAULT_BANNERS);
 
+  // Touch/swipe support
+  const touchStartX = useRef(null);
+  const touchEndX = useRef(null);
+  const isSwiping = useRef(false);
+
   const handleBannerClick = (banner) => {
-    navigate(`/banner/${banner._id}`);
+    // Faqat swipe bo'lmagan holatda navigate qilamiz
+    if (!isSwiping.current) {
+      navigate(`/banner/${banner._id}`);
+    }
   };
 
   useEffect(() => {
@@ -97,27 +105,61 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [banners.length]);
 
+  // Touch handlers — surish orqali karusel
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchEndX.current = null;
+    isSwiping.current = false;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+    if (Math.abs(touchStartX.current - touchEndX.current) > 10) {
+      isSwiping.current = true;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    const diff = touchStartX.current - touchEndX.current;
+    const SWIPE_THRESHOLD = 50;
+    if (diff > SWIPE_THRESHOLD) {
+      nextSlide(); // Chapga surish → keyingi slayd
+    } else if (diff < -SWIPE_THRESHOLD) {
+      prevSlide(); // O'ngga surish → oldingi slayd
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+    // isSwiping ni click eventdan keyin tozalaymiz
+    setTimeout(() => { isSwiping.current = false; }, 300);
+  };
+
   return (
     <div className="page-home">
       <section className="banner-section container">
-        <div className="carousel-container">
+        <div
+          className="carousel-container"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <button className="carousel-arrow left-arrow" onClick={prevSlide} aria-label="Oldingi slayd">
             <ChevronLeft size={24} />
           </button>
-          
-          <div 
-            className="carousel-track" 
+
+          <div
+            className="carousel-track"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {banners.map((banner, index) => (
-              <div 
-                className="banner carousel-slide clickable-banner" 
+              <div
+                className="banner carousel-slide clickable-banner"
                 key={index}
                 onClick={() => handleBannerClick(banner)}
               >
-                <img 
-                  src={banner.image} 
-                  alt={banner.title} 
+                <img
+                  src={banner.image}
+                  alt={banner.title}
                   className="banner-bg-img"
                 />
                 <div className="banner-overlay" />
@@ -128,13 +170,15 @@ const Home = () => {
               </div>
             ))}
           </div>
+
           <button className="carousel-arrow right-arrow" onClick={nextSlide} aria-label="Keyingi slayd">
             <ChevronRight size={24} />
           </button>
+
           <div className="carousel-dots">
             {banners.map((_, index) => (
-              <button 
-                key={index} 
+              <button
+                key={index}
                 className={`carousel-dot ${currentSlide === index ? 'active' : ''}`}
                 onClick={() => setCurrentSlide(index)}
                 aria-label={`Slide ${index + 1}`}
@@ -152,7 +196,6 @@ const Home = () => {
           ))}
         </div>
       </section>
-
     </div>
   );
 };
