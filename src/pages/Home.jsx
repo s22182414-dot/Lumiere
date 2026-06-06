@@ -292,16 +292,7 @@ const Home = () => {
             ))}
           </div>
 
-          <div className="carousel-dots">
-            {banners.map((_, index) => (
-              <button
-                key={index}
-                className={`carousel-dot ${realIndex === index ? 'active' : ''}`}
-                onClick={() => goTo(index)}
-                aria-label={`Slide ${index + 1}`}
-              />
-            ))}
-          </div>
+
         </div>
       </section>
 
