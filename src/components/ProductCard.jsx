@@ -11,172 +11,90 @@ const ProductCard = ({ product }) => {
   const [isAdded, setIsAdded] = useState(false);
   const [dbReviews, setDbReviews] = useState([]);
 
-  // Mini-karusel uchun
+  // Rasmlar
   const images = (product.images && product.images.length > 0)
     ? product.images
     : [product.image];
 
-  // Infinite loop uchun klon slaydlar
-  const slides = images.length > 1
-    ? [images[images.length - 1], ...images, images[0]]
-    : images;
+  // Joriy ko'rsatiladigan rasm indeksi (0-based, oddiy — klon yo'q)
+  const [activeIndex, setActiveIndex] = useState(0);
+  const isHovered = useRef(false);
+  const autoTimer = useRef(null);
+  const AUTO_INTERVAL = 2500;
 
-  const [trackIndex, setTrackIndex] = useState(1);
-  const [animated, setAnimated] = useState(true);
-  const isTransitioning = useRef(false);
-  const trackRef = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const userInteractedAt = useRef(null);
-  const AUTO_INTERVAL = 2500; // 2.5 soniyada bir almashinadi
-  const PAUSE_AFTER_SWIPE = 5000; // swiped dan keyin 5s kutadi
+  // Auto-play: hover bo'lmaganda ishlaydi
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const start = () => {
+      autoTimer.current = setInterval(() => {
+        if (!isHovered.current) {
+          setActiveIndex(prev => (prev + 1) % images.length);
+        }
+      }, AUTO_INTERVAL);
+    };
+    start();
+    return () => clearInterval(autoTimer.current);
+  }, [images.length]);
 
-  const realIndex = images.length > 1
-    ? (trackIndex === 0
-        ? images.length - 1
-        : trackIndex === images.length + 1
-        ? 0
-        : trackIndex - 1)
-    : 0;
+  // Desktop: sichqon qaysi zonada bo'lsa — o'sha rasm
+  const handleMouseMove = (e) => {
+    if (images.length <= 1) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const zone = Math.floor((x / rect.width) * images.length);
+    const clamped = Math.max(0, Math.min(images.length - 1, zone));
+    setActiveIndex(clamped);
+  };
 
-  // Touch/swipe & Mouse drag
+  const handleMouseEnter = () => {
+    isHovered.current = true;
+  };
+
+  const handleMouseLeave = () => {
+    isHovered.current = false;
+    // Hover tugaganda birinchi rasmga qaytish
+    setActiveIndex(0);
+  };
+
+  // Mobil: swipe bilan almashtirish
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
   const isSwiping = useRef(false);
-  const isDragging = useRef(false);
-
-  // Animatsiya tugaganda klondan haqiqiyga sakrash
-  useEffect(() => {
-    if (!animated || images.length <= 1) return;
-    const handleTransitionEnd = () => {
-      if (trackIndex === 0) {
-        setAnimated(false);
-        setTrackIndex(images.length);
-      } else if (trackIndex === images.length + 1) {
-        setAnimated(false);
-        setTrackIndex(1);
-      }
-      isTransitioning.current = false;
-    };
-    const track = trackRef.current;
-    if (track) {
-      track.addEventListener('transitionend', handleTransitionEnd);
-      return () => track.removeEventListener('transitionend', handleTransitionEnd);
-    }
-  }, [trackIndex, animated, images.length]);
-
-  useEffect(() => {
-    if (!animated) {
-      const t = setTimeout(() => setAnimated(true), 20);
-      return () => clearTimeout(t);
-    }
-  }, [animated]);
-
-  // Auto-play: hover bo'lganda yoki swipe qilinganda to'xtaydi
-  useEffect(() => {
-    if (images.length <= 1) return;
-    const timer = setInterval(() => {
-      if (isHovered) return;
-      const sinceSwipe = Date.now() - (userInteractedAt.current || 0);
-      if (sinceSwipe < PAUSE_AFTER_SWIPE) return;
-      if (isTransitioning.current) return;
-      isTransitioning.current = true;
-      setAnimated(true);
-      setTrackIndex(prev => prev + 1);
-    }, AUTO_INTERVAL);
-    return () => clearInterval(timer);
-  }, [images.length, isHovered]);
-
-  const goNext = () => {
-    if (isTransitioning.current || images.length <= 1) return;
-    isTransitioning.current = true;
-    userInteractedAt.current = Date.now();
-    setAnimated(true);
-    setTrackIndex(prev => prev + 1);
-  };
-
-  const goPrev = () => {
-    if (isTransitioning.current || images.length <= 1) return;
-    isTransitioning.current = true;
-    userInteractedAt.current = Date.now();
-    setAnimated(true);
-    setTrackIndex(prev => prev - 1);
-  };
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
     touchEndX.current = null;
     isSwiping.current = false;
-    userInteractedAt.current = Date.now();
+    isHovered.current = true; // auto-play ni to'xtatish
   };
 
   const handleTouchMove = (e) => {
     touchEndX.current = e.touches[0].clientX;
     if (Math.abs(touchStartX.current - touchEndX.current) > 8) {
       isSwiping.current = true;
-      e.preventDefault();
     }
   };
 
   const handleTouchEnd = () => {
-    if (touchStartX.current === null || touchEndX.current === null) return;
+    if (touchStartX.current === null || touchEndX.current === null) {
+      isHovered.current = false;
+      return;
+    }
     const diff = touchStartX.current - touchEndX.current;
     if (Math.abs(diff) > 40) {
-      if (diff > 0) goNext();
-      else goPrev();
+      if (diff > 0) {
+        setActiveIndex(prev => (prev + 1) % images.length);
+      } else {
+        setActiveIndex(prev => (prev - 1 + images.length) % images.length);
+      }
     }
-    userInteractedAt.current = Date.now();
     touchStartX.current = null;
     touchEndX.current = null;
-    setTimeout(() => { isSwiping.current = false; }, 200);
+    setTimeout(() => {
+      isSwiping.current = false;
+      isHovered.current = false;
+    }, 1500);
   };
-
-  // Mouse drag — document darajasida
-  const handleMouseDown = (e) => {
-    if (images.length <= 1) return;
-    e.preventDefault();
-    touchStartX.current = e.clientX;
-    touchEndX.current = null;
-    isSwiping.current = false;
-    isDragging.current = true;
-    userInteractedAt.current = Date.now();
-    document.body.style.cursor = 'grabbing';
-    document.body.style.userSelect = 'none';
-  };
-
-  useEffect(() => {
-    const onMouseMove = (e) => {
-      if (!isDragging.current) return;
-      touchEndX.current = e.clientX;
-      if (Math.abs(touchStartX.current - touchEndX.current) > 8) {
-        isSwiping.current = true;
-      }
-    };
-    const onMouseUp = () => {
-      if (!isDragging.current) return;
-      isDragging.current = false;
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
-      if (touchStartX.current === null || touchEndX.current === null) {
-        touchStartX.current = null;
-        return;
-      }
-      const diff = touchStartX.current - touchEndX.current;
-      if (Math.abs(diff) > 40) {
-        if (diff > 0) goNext();
-        else goPrev();
-      }
-      userInteractedAt.current = Date.now();
-      touchStartX.current = null;
-      touchEndX.current = null;
-      setTimeout(() => { isSwiping.current = false; }, 200);
-    };
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-    return () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-  }, [images.length]);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -265,54 +183,46 @@ const ProductCard = ({ product }) => {
         className="product-card-link"
         style={{ display: 'flex', flexDirection: 'column', height: '100%', color: 'inherit', textDecoration: 'none' }}
       >
-        {/* Mini karusel */}
+        {/* Rasm bloki */}
         <div
           className="product-image-container"
-          style={{
-            position: 'relative',
-            overflow: 'hidden',
-            cursor: images.length > 1 ? 'grab' : 'default',
-            userSelect: 'none',
-          }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          style={{ position: 'relative', overflow: 'hidden', cursor: 'default' }}
+          onMouseMove={images.length > 1 ? handleMouseMove : undefined}
+          onMouseEnter={images.length > 1 ? handleMouseEnter : undefined}
+          onMouseLeave={images.length > 1 ? handleMouseLeave : undefined}
           onTouchStart={images.length > 1 ? handleTouchStart : undefined}
           onTouchMove={images.length > 1 ? handleTouchMove : undefined}
           onTouchEnd={images.length > 1 ? handleTouchEnd : undefined}
-          onMouseDown={handleMouseDown}
         >
-          {/* Track */}
-          <div
-            ref={trackRef}
-            style={{
-              display: 'flex',
-              width: '100%',
-              height: '100%',
-              transform: `translateX(-${trackIndex * 100}%)`,
-              transition: animated ? 'transform 0.4s ease-in-out' : 'none',
-              pointerEvents: 'none',
-            }}
-          >
-            {slides.map((imgSrc, idx) => (
-              <img
-                key={idx}
-                src={imgSrc}
-                alt={product.name}
-                className="product-image"
-                loading="lazy"
-                draggable={false}
-                style={{ minWidth: '100%', height: '100%', objectFit: 'cover', flexShrink: 0 }}
-              />
-            ))}
-          </div>
+          {/* Rasmlar — CSS opacity bilan almashadi, tez va silliq */}
+          {images.map((imgSrc, idx) => (
+            <img
+              key={idx}
+              src={imgSrc}
+              alt={product.name}
+              className="product-image"
+              loading="lazy"
+              draggable={false}
+              style={{
+                position: idx === 0 ? 'relative' : 'absolute',
+                top: 0, left: 0,
+                width: '100%', height: '100%',
+                objectFit: 'cover',
+                opacity: activeIndex === idx ? 1 : 0,
+                transition: 'opacity 0.25s ease',
+                pointerEvents: 'none',
+                userSelect: 'none',
+              }}
+            />
+          ))}
 
-          {/* Nuqtachalar — faqat bir nechta rasm bo'lsa */}
+          {/* Zona ko'rsatkichlari (nuqtachalar o'rniga chiziqlar) */}
           {images.length > 1 && (
             <div className="card-carousel-dots">
               {images.map((_, idx) => (
                 <span
                   key={idx}
-                  className={`card-carousel-dot ${realIndex === idx ? 'active' : ''}`}
+                  className={`card-carousel-dot ${activeIndex === idx ? 'active' : ''}`}
                 />
               ))}
             </div>
