@@ -22,6 +22,7 @@ const Profile = () => {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [reviewToDelete, setReviewToDelete] = useState(null);
   const [imgError, setImgError] = useState(false);
 
   // Info Edit states
@@ -243,25 +244,30 @@ const Profile = () => {
     }
   };
 
-  const handleDeleteReview = async (id) => {
-    if (window.confirm("Ushbu sharhni o'chirmoqchimisiz?")) {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews/${id}`, {
-          method: 'DELETE'
-        });
-        if (res.ok) {
-          setReviews(reviews.filter(r => r._id !== id && r.id !== id));
-          showToast("Sharh o'chirildi.");
-        } else {
-          alert("Sharhni o'chirishda xatolik yuz berdi.");
-        }
-      } catch (err) {
-        console.error("API error deleting review, using localStorage fallback:", err);
-        const updated = reviews.filter(r => r.id !== id && r._id !== id);
-        localStorage.setItem('user_reviews', JSON.stringify(updated));
-        setReviews(updated);
-        showToast("Sharh o'chirildi. (Offline)");
+  const handleDeleteReview = (id) => {
+    setReviewToDelete(id);
+  };
+
+  const confirmDeleteReview = async () => {
+    if (!reviewToDelete) return;
+    const id = reviewToDelete;
+    setReviewToDelete(null);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        setReviews(reviews.filter(r => r._id !== id && r.id !== id));
+        showToast("Sharh o'chirildi.");
+      } else {
+        showToast("Sharhni o'chirishda xatolik yuz berdi.");
       }
+    } catch (err) {
+      console.error("API error deleting review, using localStorage fallback:", err);
+      const updated = reviews.filter(r => r.id !== id && r._id !== id);
+      localStorage.setItem('user_reviews', JSON.stringify(updated));
+      setReviews(updated);
+      showToast("Sharh o'chirildi. (Offline)");
     }
   };
 
@@ -1428,6 +1434,110 @@ const Profile = () => {
                 onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
               >
                 Ha, chiqish
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Premium Custom Confirm Modal for Delete Review ─── */}
+      {reviewToDelete && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.45)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 999999,
+          animation: 'fadeInModalBackdrop 0.2s ease forwards'
+        }} onClick={() => setReviewToDelete(null)}>
+          <div style={{
+            background: '#ffffff',
+            borderRadius: '12px',
+            padding: '2.25rem',
+            width: '90%',
+            maxWidth: '380px',
+            textAlign: 'center',
+            boxShadow: '0 20px 45px rgba(0, 0, 0, 0.1)',
+            border: '1px solid #e6e8eb',
+            transform: 'scale(0.96)',
+            animation: 'scaleInModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '50%',
+              backgroundColor: '#fff0f3',
+              color: '#e53e3e',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1.25rem auto'
+            }}>
+              <Trash2 size={24} />
+            </div>
+            <h4 style={{
+              fontSize: '1.15rem',
+              fontWeight: '700',
+              marginBottom: '0.75rem',
+              color: '#1a1a1a',
+              textTransform: 'uppercase',
+              letterSpacing: '0.03em'
+            }}>
+              O'chirish
+            </h4>
+            <p style={{
+              fontSize: '0.9rem',
+              color: '#757575',
+              lineHeight: '1.5',
+              marginBottom: '1.75rem'
+            }}>
+              Ushbu sharhni rostdan ham o'chirmoqchimisiz? Ushbu amalni ortga qaytarib bo'lmaydi.
+            </p>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button 
+                type="button" 
+                onClick={() => setReviewToDelete(null)}
+                style={{
+                  flex: 1,
+                  padding: '0.85rem',
+                  borderRadius: '8px',
+                  background: '#f4f4f5',
+                  color: '#1a1a1a',
+                  fontWeight: '600',
+                  fontSize: '0.92rem',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e4e4e7'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f4f4f5'}
+              >
+                Bekor qilish
+              </button>
+              <button 
+                type="button" 
+                onClick={confirmDeleteReview}
+                style={{
+                  flex: 1,
+                  padding: '0.85rem',
+                  borderRadius: '8px',
+                  background: '#e53e3e',
+                  color: '#ffffff',
+                  fontWeight: '600',
+                  fontSize: '0.92rem',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'opacity 0.2s',
+                  boxShadow: '0 4px 12px rgba(229, 62, 62, 0.2)'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.opacity = '0.9'}
+                onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
+              >
+                O'chirish
               </button>
             </div>
           </div>
