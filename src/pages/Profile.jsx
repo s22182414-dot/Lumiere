@@ -480,13 +480,17 @@ const Profile = () => {
         
         .review-delete-btn {
           position: absolute;
-          bottom: 1rem;
-          right: 1rem;
+          top: 12px !important;
+          right: 12px !important;
+          bottom: auto !important;
+          left: auto !important;
+          width: 32px !important;
+          height: 32px !important;
+          padding: 0 !important;
           background: none;
           border: none;
           color: #e53e3e;
           cursor: pointer;
-          padding: 8px;
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -1090,7 +1094,6 @@ const Profile = () => {
                           onClick={() => handleDeleteReview(rev._id || rev.id)}
                           className="review-delete-btn"
                           title="Sharhni o'chirish"
-                          style={{ position: 'absolute', top: '12px', right: '12px' }}
                         >
                           <Trash2 size={16} />
                         </button>
