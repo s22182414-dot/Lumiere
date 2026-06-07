@@ -881,6 +881,53 @@ const Checkout = () => {
           .btn-back-to-cart {
             font-size: 0.85rem !important;
           }
+
+          /* Payment & Success Modal Mobile Overrides */
+          .payment-modal-card {
+            padding: 1.25rem !important;
+            border-radius: 12px !important;
+          }
+          .payment-modal-header {
+            margin-bottom: 1rem !important;
+          }
+          .credit-card-mockup {
+            height: 155px !important;
+            padding: 1rem !important;
+            margin-bottom: 1.25rem !important;
+          }
+          .card-chip {
+            width: 32px !important;
+            height: 22px !important;
+          }
+          .card-brand-logo {
+            font-size: 1.1rem !important;
+            top: 1rem !important;
+            right: 1rem !important;
+          }
+          .card-number-display {
+            font-size: 1.05rem !important;
+            letter-spacing: 1.5px !important;
+            margin: 0.85rem 0 !important;
+          }
+          .card-holder-label, .card-expiry-label {
+            font-size: 0.6rem !important;
+          }
+          .card-holder-value, .card-expiry-value {
+            font-size: 0.75rem !important;
+          }
+          .success-modal-card {
+            padding: 1.75rem 1.25rem !important;
+            border-radius: 16px !important;
+          }
+          .success-modal-buttons {
+            flex-direction: column !important;
+            gap: 10px !important;
+          }
+          .success-modal-buttons button {
+            width: 100% !important;
+            padding: 0.8rem !important;
+            font-size: 0.88rem !important;
+          }
         }
 
         @media (min-width: 901px) {
