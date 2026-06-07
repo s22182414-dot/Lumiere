@@ -771,15 +771,27 @@ const Checkout = () => {
 
         @media (max-width: 900px) {
           .checkout-page-wrapper {
-            padding: 0.5rem 0.5rem !important;
+            padding: 0.5rem !important;
+            box-sizing: border-box !important;
+            overflow-x: hidden !important;
           }
           .checkout-container {
             padding: 0 !important;
             width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
           }
           .checkout-layout {
             grid-template-columns: 1fr !important;
             gap: 0.75rem !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+          }
+          .checkout-left-col, .checkout-right-col {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
           }
           .form-grid-2 {
             grid-template-columns: 1fr !important;
@@ -790,8 +802,9 @@ const Checkout = () => {
             margin-bottom: 0.75rem !important;
             border-radius: 12px !important;
             width: 100% !important;
+            max-width: 100% !important;
             box-sizing: border-box !important;
-            overflow: visible !important;
+            overflow: hidden !important;
           }
           .checkout-header {
             margin-bottom: 0.6rem !important;
