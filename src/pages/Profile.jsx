@@ -479,7 +479,7 @@ const Profile = () => {
         }
         
         .review-delete-btn {
-          position: absolute;
+          position: absolute !important;
           top: 12px !important;
           right: 12px !important;
           bottom: auto !important;
@@ -487,19 +487,27 @@ const Profile = () => {
           width: 32px !important;
           height: 32px !important;
           padding: 0 !important;
-          background: none;
-          border: none;
-          color: #e53e3e;
+          background-color: #ffeef0 !important;
+          border: 1px solid #feb2b2 !important;
+          color: #e53e3e !important;
           cursor: pointer;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          border-radius: 50% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
           transition: all 0.2s;
-          z-index: 5;
+          z-index: 99 !important;
         }
         .review-delete-btn:hover {
-          background: #fff5f5 !important;
+          background-color: #fed7d7 !important;
+          border-color: #e53e3e !important;
+        }
+        .review-delete-btn svg {
+          width: 16px !important;
+          height: 16px !important;
+          flex-shrink: 0 !important;
+          stroke: #e53e3e !important;
+          display: block !important;
         }
         
         /* Toast style */
